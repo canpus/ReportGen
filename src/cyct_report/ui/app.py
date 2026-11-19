@@ -7,7 +7,7 @@ import tkinter as tk
 from tkinter import messagebox
 
 from . import theme
-from .. import __version__
+from .. import __version__, paths
 from ..db import Database
 from ..presets import Library
 from ..settings import Settings
@@ -48,6 +48,9 @@ class App:
         except tk.TclError:
             pass
         theme.apply(root)
+        icon = paths.ASSETS_DIR / "app.ico"
+        if icon.exists():
+            root.iconbitmap(default=str(icon))      # 窗口、任务栏及所有对话框
         try:
             self.ctx = AppContext()
         except Exception as e:     # 预置库或数据库无法读取时给出明确提示
@@ -63,7 +66,12 @@ class App:
     def _topbar(self):
         bar = tk.Frame(self.root, bg=theme.SHELL)
         bar.pack(fill="x", padx=18, pady=(14, 8))
-        logo = tk.Label(bar, text=theme.ICONS["doc"], font=theme.icon_font(16), bg=theme.SHELL, fg=theme.ACCENT)
+        png = paths.ASSETS_DIR / "logo32.png"
+        if png.exists():
+            self._logo = tk.PhotoImage(file=str(png))
+            logo = tk.Label(bar, image=self._logo, bg=theme.SHELL)
+        else:
+            logo = tk.Label(bar, text=theme.ICONS["doc"], font=theme.icon_font(16), bg=theme.SHELL, fg=theme.ACCENT)
         logo.pack(side="left")
         tk.Label(bar, text="出厂检测报告", font=theme.BRAND, bg=theme.SHELL, fg=theme.TEXT).pack(side="left", padx=(8, 4))
         tk.Label(bar, text=f"v{__version__}", font=theme.SMALL, bg=theme.SHELL, fg=theme.FAINT).pack(side="left")

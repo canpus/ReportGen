@@ -18,6 +18,7 @@ PRESETS_DIR = APP_DIR / "presets"
 STANDARDS_DIR = PRESETS_DIR / "standards"
 TERMS_FILE = PRESETS_DIR / "terms.json"
 TEMPLATES_DIR = APP_DIR / "templates"
+ASSETS_DIR = APP_DIR / "assets"
 
 
 def data_dir() -> Path:

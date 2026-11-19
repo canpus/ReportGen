@@ -14,6 +14,7 @@
 | `presets/terms.json` | 三语术语表 |
 | `presets/standards/*.json` | 各标准的检测项、指标、测试方法与产品类型 |
 | `templates/report_*.docx` | 三种语言的报告模板（页眉、页脚、页面设置） |
+| `assets/` | 程序图标（由 `tools/make_icon.py` 生成） |
 | `tools/` | 打包、模板生成、版式对照与界面冒烟脚本 |
 | `tests/` | pytest 测试 |
 
@@ -39,7 +40,7 @@ run.bat
 .venv\Scripts\python.exe tools/build.py
 ```
 
-产物在 `dist/CYCT检测报告/`（exe + `presets/` + `templates/` + 使用说明）及同名 zip。当前体积：文件夹约 38 MB，zip 约 18 MB。
+产物在 `dist/CYCT检测报告/`（exe + `presets/` + `templates/` + `assets/` + 使用说明）及同名 zip。当前体积：文件夹约 38 MB，zip 约 18 MB。
 在新电脑上可运行 `CYCTReport.exe --selftest`，结果写入 `data/selftest/result.txt`，用于确认 Word/WPS 后台转换可用。
 
 ## 标准库格式

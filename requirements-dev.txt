@@ -1,0 +1,6 @@
+# 开发、测试与打包（不进入发布包）
+-r requirements.txt
+pytest==9.2.0
+pyinstaller==6.22.3
+pymupdf==2.1
+pillow==13.0.0

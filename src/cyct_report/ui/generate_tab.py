@@ -22,7 +22,7 @@ class GenerateTab(ttk.Frame):
         self.lang = tk.StringVar(value=self.settings.get("last_lang", "zh"))
         self.display_var, self.tmax_var = tk.StringVar(), tk.StringVar()
         self.display_auto = True
-        self._std_ids, self._tpl_ids = [], []
+        self._std_ids, self._std_index, self._tpl_index = [], 0, 0
         self._build_form()
         self.products = ProductsPanel(self, lambda: self.db.names("product"))
         self.products.pack(fill="x", pady=4)
@@ -108,16 +108,23 @@ class GenerateTab(ttk.Frame):
         return std.templates[i] if 0 <= i < len(std.templates) else None
 
     def _std_changed(self, preferred=None):
+        if preferred is None and self.items.has_results() and not messagebox.askyesno(
+                "切换标准", "切换后检测项会换成新标准的默认项，已录入的实测值将清空。继续？", parent=self):
+            self.std_box.current(self._std_index)
+            return
+        self._std_index = self.std_box.current()
         std = self.current_std()
         self.tpl_box.configure(values=[t.label.get("zh") or t.label.get("en") for t in std.templates])
         ids = [t.id for t in std.templates]
         self.tpl_box.current(ids.index(preferred) if preferred in ids else 0)
-        self._tpl_changed(confirm=preferred is None)
+        self._tpl_changed(confirm=False)
 
     def _tpl_changed(self, confirm=True):
         if confirm and self.items.has_results() and not messagebox.askyesno(
                 "切换类型", "切换后检测项会换成新类型的默认项，已录入的实测值将清空。继续？", parent=self):
+            self.tpl_box.current(self._tpl_index)
             return
+        self._tpl_index = self.tpl_box.current()
         tpl = self.current_tpl()
         self.tmax_var.set("" if tpl.tmax is None else str(tpl.tmax))
         self.reset_items(confirm=False)
@@ -175,7 +182,11 @@ class GenerateTab(ttk.Frame):
         tpl = self.current_tpl()
         tid = self.lib.save_custom(std.id, name.strip(), self._tmax_value(), tpl.tc if tpl else "",
                                    self.display_var.get(), items)
-        self._std_changed(preferred=tid)
+        # 只刷新类型列表并选中新模板，保留表中已录入的实测值
+        std = self.current_std()
+        self.tpl_box.configure(values=[t.label.get("zh") or t.label.get("en") for t in std.templates])
+        self._tpl_index = [t.id for t in std.templates].index(tid)
+        self.tpl_box.current(self._tpl_index)
         messagebox.showinfo("保存为自定义模板", f"已保存，可在“{std.name}”的产品类型列表中选择“★ {name}”。",
                             parent=self)
 

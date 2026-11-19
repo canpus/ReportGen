@@ -31,6 +31,7 @@ run.bat
 - 版式对照：`python tools/render_sample.py work/render`，用样本数据生成中/英/俄报告及 PNG。
 - 界面冒烟：`python tools/ui_smoke.py work/ui`，自动填写、生成、导入并截图。
 - 重新生成模板：`python tools/make_templates.py <中文样本.docx> <英文样本.docx>`。
+- 指标核对表：`python tools/export_checklist.py final/预置检测项核对表_v1.xlsx`，把预置库导出为 Excel 供质检核对；预置库修改后可重新导出。
 
 ## 打包
 

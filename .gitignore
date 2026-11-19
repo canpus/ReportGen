@@ -13,3 +13,5 @@ dist/
 *.spec
 # Office 临时文件
 ~$*
+# 交付物（由脚本生成）
+final/

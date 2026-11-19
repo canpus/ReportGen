@@ -1,6 +1,8 @@
-# CYCT 出厂检测报告生成器
+# ReportGen 出厂检测报告生成器
 
-为长园长通（CYCT）生成固定格式的出厂检测报告（中文 / English / Русский），同时输出 docx 与 PDF，并管理历史报告。
+面向出厂质检，支持生成中文、英文和俄文的检测报告，输出 DOCX 与 PDF，并管理历史报告。
+
+Windows 发布包可从 [GitHub Releases](https://github.com/canpus/ReportGen/releases) 下载。解压后双击主程序即可运行。
 
 - 界面：tkinter；报告：python-docx 按 `templates/` 中的版式生成；PDF：后台调用 Word（2013+）或 WPS（comtypes）。
 - 数据：程序目录下 `data/`（SQLite 数据库、报告库、设置、自定义模板）。
@@ -10,10 +12,10 @@
 
 | 路径 | 内容 |
 |---|---|
-| `src/cyct_report/` | 程序代码（核心逻辑与 `ui/` 界面分开） |
+| `src/` | 程序代码（核心逻辑与 `ui/` 界面分开） |
 | `presets/terms.json` | 三语术语表 |
 | `presets/standards/*.json` | 各标准的检测项、指标、测试方法与产品类型 |
-| `templates/report_*.docx` | 三种语言的报告模板（页眉、页脚、页面设置） |
+| `templates/report_*.docx` | 三种语言的报告模板，随发布包提供，从源码运行时需放到本地 |
 | `assets/` | 程序图标（由 `tools/make_icon.py` 生成） |
 | `tools/` | 打包、模板生成、版式对照与界面冒烟脚本 |
 | `tests/` | pytest 测试 |
@@ -40,8 +42,8 @@ run.bat
 .venv\Scripts\python.exe tools/build.py
 ```
 
-产物在 `dist/CYCT检测报告/`（exe + `presets/` + `templates/` + `assets/` + 使用说明）及同名 zip。当前体积：文件夹约 38 MB，zip 约 18 MB。
-在新电脑上可运行 `CYCTReport.exe --selftest`，结果写入 `data/selftest/result.txt`，用于确认 Word/WPS 后台转换可用。
+`dist/` 中的 ZIP 是 Windows 发布包，包含主程序、预置库、报告模板、图标和使用说明。
+在新电脑上可给主程序传入 `--selftest` 参数，检查 Word 或 WPS 的后台转换功能。结果写入 `data/selftest/result.txt`。
 
 ## 标准库格式
 
@@ -61,7 +63,7 @@ run.bat
 | `iso21809-3.json` | ISO 21809-3:2016 Table 10、12、16、17、18 |
 | `en12068.json` | BS EN 12068:1999 Table 1、2 |
 | `din30672.json` | DIN 30672:2000-12（沿用 EN 12068 指标，C 级取第三列，另加 5.2/6.2 条要求） |
-| `gbt23257.json` | CYCT 现行 GB/T 23257-2017 热收缩带出货检测报告 |
+| `gbt23257.json` | GB/T 23257-2017 热收缩带出货检测报告 |
 | `gost-r-51164.json` | ГОСТ Р 51164-98 表 1（结构 14–17）、表 2 |
 | `adnoc-ages-sp-07-006.json` | ADNOC AGES-SP-07-006 Rev.1 Table C、D |
 | `pdo-sp-2389.json` | PDO SP-2389（2021）Table 13.1、14.1 |

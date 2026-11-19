@@ -22,12 +22,24 @@ def ml_get(d: dict, lang: str) -> str:
     return ""
 
 
+def has_cjk(text: str) -> bool:
+    return bool(re.search(r"[一-鿿]", text or ""))
+
+
 def ml_set(d: dict, lang: str, text: str) -> dict:
-    """编辑某语言的文字：若该字段原本三语相同（与语言无关的数值、符号），三语一起改。"""
-    if len(set(d.values())) <= 1:
-        return ml(text)
+    """修改某语言的文字。
+
+    界面只改中文：新文字不含汉字（数值、符号，如 ≥5.0）时三语一起改；
+    含汉字时，其他语言若原本就没有译文（与旧中文相同或为空）则跟着改，已有译文则保留。
+    """
+    old = d.get(lang, "")
     out = dict(d)
     out[lang] = text
+    for other in LANGS:
+        if other == lang:
+            continue
+        if (lang == "zh" and not has_cjk(text)) or d.get(other, "") in ("", old):
+            out[other] = text
     return out
 
 

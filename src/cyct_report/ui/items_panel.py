@@ -1,202 +1,186 @@
-"""检测项表格：显示、实测值录入、增删改、上下移动、合格判定提示。"""
-import itertools
-import re
+"""检测项表格：多列只读显示，只有“实测值”一列是输入框；界面一律显示中文。"""
 import tkinter as tk
-from tkinter import messagebox, simpledialog, ttk
+from tkinter import messagebox
 
-from ..checker import judge
-from ..models import Item, ml, ml_set
-from ..presets import render_cond
-from .widgets import TreeEditor
-
-COLUMNS = ("name", "cond", "unit", "req", "result", "judge", "method")
-HEADINGS = {"name": "检测项目", "cond": "条件/温度", "unit": "单位", "req": "标准值（指标）",
-            "result": "实测值", "judge": "判定", "method": "测试方法"}
-WIDTHS = {"name": 300, "cond": 100, "unit": 70, "req": 170, "result": 120, "judge": 46, "method": 150}
-_SUP_DIGITS = str.maketrans("0123456789-", "⁰¹²³⁴⁵⁶⁷⁸⁹⁻")
+from . import theme
+from .item_edit_dialog import ItemEditDialog
+from .items_row import COLUMNS, MIN_WIDTH, WEIGHTS, ItemRow
+from .rounded import Button, Panel
+from .scroll import ScrollTable
 
 
-def _sup(text):
-    """界面显示用：10^14 → 10¹⁴（报告中由 docx_text 输出真正的上标）。"""
-    return re.sub(r"\^\{?(-?\d+)\}?", lambda m: m.group(1).translate(_SUP_DIGITS), text or "")
-
-
-class ItemsPanel(ttk.LabelFrame):
+class ItemsPanel(tk.Frame):
     def __init__(self, master, on_add_items, on_save_template, on_reset):
-        super().__init__(master, text="检测项（单击“实测值”列直接录入，回车跳到下一项；双击其他列可修改）")
-        self.lang, self.tmax = "zh", None
-        self.items = {}                     # iid -> Item
-        self._ids = itertools.count()
-        self._build(on_add_items, on_save_template, on_reset)
+        super().__init__(master, bg=theme.LANE)
+        self.tmax = None
+        self.rows = []
+        bar = tk.Frame(self, bg=theme.LANE)
+        bar.pack(fill="x", pady=(0, 8))
+        tk.Label(bar, text="检测项", font=theme.TITLE, bg=theme.LANE, fg=theme.TEXT).pack(side="left")
+        tk.Label(bar, text="在“实测值”列输入，回车跳到下一项；双击一行可修改该项",
+                 font=theme.SMALL, bg=theme.LANE, fg=theme.MUTED).pack(side="left", padx=(10, 16))
+        self.summary = tk.Label(bar, font=theme.SMALL, bg=theme.LANE, fg=theme.MUTED)
+        self.summary.pack(side="right")
+        tools = tk.Frame(self, bg=theme.LANE)
+        tools.pack(fill="x", pady=(0, 8))
+        for text, icon, cmd, kind in (
+                ("添加检测项", "add", on_add_items, "ghost"), ("编辑", "edit", self.edit_selected, "ghost"),
+                ("添加分组", "group", self.add_group, "ghost"), ("上移", "up", lambda: self.move(-1), "ghost"),
+                ("下移", "down", lambda: self.move(1), "ghost"), ("删除", "delete", self.delete_selected, "danger"),
+                ("清空实测值", "clear", self.clear_results, "ghost"), ("恢复默认", "reset", on_reset, "ghost")):
+            Button(tools, text, cmd, kind=kind, icon=icon, padx=8, pady=4).pack(side="left", padx=(0, 2))
+        Button(tools, "保存为自定义模板", on_save_template, kind="soft", icon="save", padx=10,
+               pady=4).pack(side="right")
 
-    # ---------- 界面 ----------
-    def _build(self, on_add_items, on_save_template, on_reset):
-        bar = ttk.Frame(self)
-        bar.pack(fill="x", padx=4, pady=(2, 4))
-        for text, cmd in (("添加检测项…", on_add_items), ("添加分组行", self.add_group),
-                          ("删除", self.delete_selected), ("上移", lambda: self.move(-1)),
-                          ("下移", lambda: self.move(1)), ("清空实测值", self.clear_results),
-                          ("恢复默认检测项", on_reset), ("保存为自定义模板…", on_save_template)):
-            ttk.Button(bar, text=text, command=cmd).pack(side="left", padx=2)
-        self.summary = ttk.Label(bar, foreground="#555")
-        self.summary.pack(side="right", padx=6)
-
-        frame = ttk.Frame(self)
-        frame.pack(fill="both", expand=True, padx=4, pady=(0, 4))
-        self.tree = ttk.Treeview(frame, columns=COLUMNS, show="headings", selectmode="extended")
-        for c in COLUMNS:
-            self.tree.heading(c, text=HEADINGS[c])
-            self.tree.column(c, width=WIDTHS[c], stretch=c in ("name", "req", "method"),
-                             anchor="w" if c in ("name", "req", "method") else "center")
-        sb = ttk.Scrollbar(frame, command=self.tree.yview)
-        self.tree.configure(yscrollcommand=sb.set)
-        self.tree.pack(side="left", fill="both", expand=True)
-        sb.pack(side="right", fill="y")
-        self.tree.tag_configure("group", background="#e8eef7", font=("Microsoft YaHei UI", 9, "bold"))
-        self.tree.tag_configure("fail", foreground="#c00000")
-        self.tree.tag_configure("opt", foreground="#666666")
-        self.editor = TreeEditor(self.tree, self._spec, self._get, self._commit, COLUMNS)
-        self.tree.bind("<Button-1>", self._click)
-        self.tree.bind("<Double-Button-1>", self._double_click)
-        self.tree.bind("<Delete>", lambda e: self.delete_selected())
-
-    def _col_at(self, x):
-        col = self.tree.identify_column(x)
-        return COLUMNS[int(col[1:]) - 1] if col else None
-
-    def _click(self, e):
-        iid, col = self.tree.identify_row(e.y), self._col_at(e.x)
-        if iid and col == "result" and self.items[iid].kind == "item":
-            self.tree.after(10, lambda: self.editor.edit(iid, "result"))
-
-    def _double_click(self, e):
-        iid, col = self.tree.identify_row(e.y), self._col_at(e.x)
-        if iid and col and col != "result":
-            self.editor.edit(iid, col)
-            return "break"
-        return None
-
-    # ---------- 编辑 ----------
-    def _spec(self, iid, col):
-        it = self.items[iid]
-        if col == "judge":
-            return None
-        if it.kind == "group":
-            return "entry" if col == "name" else None
-        return "entry"
-
-    def _get(self, iid, col):
-        it = self.items[iid]
-        return it.result if col == "result" else it.get(col, self.lang)
-
-    def _commit(self, iid, col, value):
-        it = self.items[iid]
-        if col == "result":
-            it.result = value.strip()
-        else:
-            setattr(it, col, ml_set(getattr(it, col), self.lang, value))
-        self._render_row(iid)
-        self._update_summary()
+        card = Panel(self, fill=theme.CARD, outside=theme.LANE, radius=10, border=theme.LINE, pad=1)
+        card.pack(fill="both", expand=True)
+        self.table = ScrollTable(card.inner, COLUMNS, bg=theme.CARD, header_bg=theme.CARD)
+        self.table.pack(fill="both", expand=True, padx=4, pady=(4, 6))
+        for i, (title, _w, _wt) in enumerate(COLUMNS):
+            tk.Label(self.table.header, text=title, bg=theme.CARD, fg=theme.MUTED, font=theme.BOLD,
+                     anchor="w" if i == 1 else "center").grid(row=0, column=i, sticky="ew", padx=6, pady=(6, 4))
+        tk.Frame(self.table.header, height=1, bg=theme.LINE).grid(row=1, column=0, columnspan=len(COLUMNS) + 1,
+                                                                  sticky="ew")
+        self.table.width_callbacks.append(self._on_width)
+        self.name_width = COLUMNS[1][1]
 
     # ---------- 数据 ----------
     def set_items(self, items):
-        self.editor.close(save=False)
-        self.tree.delete(*self.tree.get_children())
-        self.items.clear()
-        for it in items:
-            self._insert(it)
-        self._update_summary()
+        for r in self.rows:
+            r.frame.destroy()
+        self.rows = [ItemRow(self, it) for it in items]
+        self._relayout()
+        self.table.to_top()
 
     def get_items(self):
-        self.editor.close(save=True)
-        return [self.items[i] for i in self.tree.get_children()]
+        return [r.item for r in self.rows]
 
-    def set_context(self, lang, tmax):
-        self.lang, self.tmax = lang, tmax
-        for iid in self.tree.get_children():
-            self._render_row(iid)
-
-    def _insert(self, it, index="end"):
-        iid = f"i{next(self._ids)}"
-        self.items[iid] = it
-        self.tree.insert("", index, iid=iid)
-        self._render_row(iid)
-        return iid
-
-    def _render_row(self, iid):
-        it, lang = self.items[iid], self.lang
-        if it.kind == "group":
-            self.tree.item(iid, values=("【" + it.get("name", lang) + "】", "", "", "", "", "", ""),
-                           tags=("group",))
-            return
-        ok = judge(it.get("req", lang), it.result)
-        mark = {True: "✓", False: "✗", None: ""}[ok]
-        values = (it.get("name", lang), render_cond(it.get("cond", lang), self.tmax),
-                  it.get("unit", lang), _sup(it.get("req", lang)), _sup(it.result), mark,
-                  it.get("method", lang).replace("\n", " "))
-        tags = ("fail",) if ok is False else (("opt",) if it.opt else ())
-        self.tree.item(iid, values=values, tags=tags)
-
-    def _update_summary(self):
-        items = [self.items[i] for i in self.tree.get_children() if self.items[i].kind == "item"]
-        filled = sum(1 for i in items if i.result)
-        fails = sum(1 for i in items if judge(i.get("req", self.lang), i.result) is False)
-        text = f"共 {len(items)} 项，已录入 {filled} 项"
-        if fails:
-            text += f"，{fails} 项不符合指标"
-        self.summary.configure(text=text, foreground="#c00000" if fails else "#555")
-
-    def insert_items(self, items):
-        sel = self.tree.selection()
-        index = self.tree.index(sel[-1]) + 1 if sel else "end"
-        new = []
-        for it in items:
-            new.append(self._insert(it, index))
-            if index != "end":
-                index += 1
-        if new:
-            self.tree.selection_set(new)
-            self.tree.see(new[-1])
-        self._update_summary()
-
-    def add_group(self):
-        name = simpledialog.askstring("添加分组行", "分组名称：", parent=self)
-        if name:
-            self.insert_items([Item(kind="group", name=ml(name), note=ml(""))])
-
-    def delete_selected(self):
-        sel = self.tree.selection()
-        if not sel:
-            return
-        if len(sel) > 1 and not messagebox.askyesno("删除", f"删除选中的 {len(sel)} 行？", parent=self):
-            return
-        for iid in sel:
-            self.tree.delete(iid)
-            self.items.pop(iid, None)
-        self._update_summary()
-
-    def move(self, step):
-        sel = list(self.tree.selection())
-        if not sel:
-            return
-        rows = self.tree.get_children()
-        order = sel if step < 0 else reversed(sel)
-        for iid in order:
-            idx = rows.index(iid) + step
-            if 0 <= idx < len(rows):
-                self.tree.move(iid, "", idx)
-                rows = self.tree.get_children()
-        self.tree.see(sel[0])
-
-    def clear_results(self):
-        if messagebox.askyesno("清空实测值", "清空全部实测值？", parent=self):
-            for iid, it in self.items.items():
-                it.result = ""
-                self._render_row(iid)
-            self._update_summary()
+    def set_tmax(self, tmax):
+        self.tmax = tmax
+        self._refresh()
 
     def has_results(self):
-        return any(it.result for it in self.items.values())
+        return any(r.item.result for r in self.rows if r.item.kind == "item")
 
     def existing_keys(self):
-        return {(it.get("name", "en"), it.get("cond", "en")) for it in self.items.values()}
+        return {(r.item.get("name", "en"), r.item.get("cond", "en")) for r in self.rows}
+
+    # ---------- 布局 ----------
+    def _relayout(self):
+        for r in self.rows:
+            r.frame.pack_forget()
+        for r in self.rows:
+            r.frame.pack(fill="x")
+            r.set_name_width(self.name_width)
+        self._refresh()
+
+    def _refresh(self):
+        seq = 0
+        for r in self.rows:
+            if r.item.kind == "item":
+                seq += 1
+            r.refresh(seq, self.tmax)
+        self.update_summary()
+
+    def _on_width(self, width):
+        extra = max(width - MIN_WIDTH - 30, 0)
+        self.name_width = COLUMNS[1][1] + extra * COLUMNS[1][2] // WEIGHTS
+        for r in self.rows:
+            r.set_name_width(self.name_width)
+
+    def update_summary(self):
+        items = [r for r in self.rows if r.item.kind == "item"]
+        filled = sum(1 for r in items if r.item.result)
+        fails = sum(1 for r in items if r.judge() is False)
+        text = f"共 {len(items)} 项 · 已录入 {filled} 项"
+        if fails:
+            text += f" · {fails} 项不符合指标"
+        self.summary.configure(text=text, fg=theme.FAIL if fails else theme.MUTED)
+
+    # ---------- 选择与键盘 ----------
+    def selected(self):
+        return [r for r in self.rows if r.selected]
+
+    def select_row(self, row, additive=False):
+        for r in self.rows:
+            if r is row:
+                r.set_selected(not r.selected if additive else True)
+            elif not additive:
+                r.set_selected(False)
+
+    def focus_next(self, row, step):
+        i = self.rows.index(row) + step
+        while 0 <= i < len(self.rows):
+            if self.rows[i].entry is not None:
+                self.rows[i].entry.focus_set()
+                self.rows[i].entry.select_range(0, "end")
+                return
+            i += step
+
+    # ---------- 操作 ----------
+    def insert_items(self, items):
+        sel = self.selected()
+        index = self.rows.index(sel[-1]) + 1 if sel else len(self.rows)
+        new = [ItemRow(self, it) for it in items]
+        self.rows[index:index] = new
+        self._relayout()
+        for r in self.rows:
+            r.set_selected(r in new)
+        if new:
+            self.after(50, lambda: self.table.see(new[-1].frame))
+
+    def edit_row(self, row):
+        self.select_row(row)
+        dlg = ItemEditDialog(self, row.item)
+        self.wait_window(dlg)
+        if dlg.result:
+            dlg.result.result = row.item.result
+            i = self.rows.index(row)
+            row.frame.destroy()
+            self.rows[i] = ItemRow(self, dlg.result)
+            self._relayout()
+            self.rows[i].set_selected(True)
+
+    def edit_selected(self):
+        sel = self.selected()
+        if sel:
+            self.edit_row(sel[0])
+        else:
+            messagebox.showinfo("编辑", "请先单击选中要修改的一行。", parent=self)
+
+    def add_group(self):
+        dlg = ItemEditDialog(self, kind="group", title="添加分组")
+        self.wait_window(dlg)
+        if dlg.result:
+            self.insert_items([dlg.result])
+
+    def delete_selected(self):
+        sel = self.selected()
+        if not sel:
+            messagebox.showinfo("删除", "请先单击选中要删除的行（按住 Ctrl 可多选）。", parent=self)
+            return
+        if not messagebox.askyesno("删除", f"删除选中的 {len(sel)} 行？", parent=self):
+            return
+        for r in sel:
+            r.frame.destroy()
+            self.rows.remove(r)
+        self._refresh()
+
+    def move(self, step):
+        sel = self.selected()
+        if not sel:
+            return
+        order = sel if step < 0 else list(reversed(sel))
+        for r in order:
+            i = self.rows.index(r)
+            j = i + step
+            if 0 <= j < len(self.rows) and not self.rows[j].selected:
+                self.rows[i], self.rows[j] = self.rows[j], self.rows[i]
+        self._relayout()
+        self.table.see(sel[0].frame)
+
+    def clear_results(self):
+        if self.has_results() and messagebox.askyesno("清空实测值", "清空全部实测值？", parent=self):
+            for r in self.rows:
+                if r.var is not None:
+                    r.var.set("")

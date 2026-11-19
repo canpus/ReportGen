@@ -1,97 +1,85 @@
-"""产品清单：品名规格、数量、单位、批号；可多行。"""
-import itertools
+"""产品清单：每行“名称规格 / 数量 / 单位 / 批号”输入框，可增删多行。"""
+import tkinter as tk
 from tkinter import ttk
 
+from . import theme
 from ..i18n import QTY_UNITS, qty_unit_key
 from ..models import Product
-from .widgets import TreeEditor
+from .rounded import Button
+from .widgets import AutocompleteEntry
 
-COLUMNS = ("name", "qty", "unit", "batch")
-HEADINGS = {"name": "产品名称/规格（按报告语言填写）", "qty": "数量", "unit": "单位", "batch": "生产批号"}
-WIDTHS = {"name": 520, "qty": 90, "unit": 80, "batch": 160}
 UNIT_CHOICES = [v["zh"] for v in QTY_UNITS.values()]
+HEAD = (("产品名称 / 规格（原样印在报告上）", 1), ("数量", 0), ("单位", 0), ("生产批号", 0), ("", 0))
+WIDTHS = (300, 90, 90, 170, 40)
 
 
-class ProductsPanel(ttk.LabelFrame):
+class _Row:
+    def __init__(self, panel, product):
+        f = tk.Frame(panel.body, bg=theme.LANE)
+        self.frame = f
+        for i, w in enumerate(WIDTHS):
+            f.grid_columnconfigure(i, minsize=w, weight=HEAD[i][1])
+        self.name = AutocompleteEntry(f, panel.product_names)
+        self.name.set_text(product.name)
+        self.name.grid(row=0, column=0, sticky="ew", padx=(0, 8), pady=3)
+        self.qty = ttk.Entry(f, width=8, justify="center")
+        self.qty.insert(0, product.qty)
+        self.qty.grid(row=0, column=1, sticky="ew", padx=(0, 8), pady=3)
+        self.unit = ttk.Combobox(f, values=UNIT_CHOICES, width=6, justify="center")
+        self.unit.set(QTY_UNITS.get(product.unit, {}).get("zh", product.unit))
+        self.unit.grid(row=0, column=2, sticky="ew", padx=(0, 8), pady=3)
+        self.batch = ttk.Entry(f, width=16, justify="center")
+        self.batch.insert(0, product.batch)
+        self.batch.grid(row=0, column=3, sticky="ew", padx=(0, 8), pady=3)
+        Button(f, "", lambda: panel.remove(self), kind="danger", icon="delete", padx=6,
+               pady=3).grid(row=0, column=4)
+
+    def product(self):
+        return Product(self.name.get_text(), self.qty.get().strip(),
+                       qty_unit_key(self.unit.get().strip() or "套"), self.batch.get().strip())
+
+
+class ProductsPanel(tk.Frame):
     def __init__(self, master, product_names):
-        super().__init__(master, text="产品（同一 ISO 类型的多个规格可放在同一份报告）")
+        super().__init__(master, bg=theme.LANE)
         self.product_names = product_names
-        self.rows = {}
-        self._ids = itertools.count()
-        bar = ttk.Frame(self)
-        bar.pack(side="right", fill="y", padx=4, pady=2)
-        ttk.Button(bar, text="添加产品", command=self.add_row).pack(fill="x", pady=1)
-        ttk.Button(bar, text="复制选中行", command=self.copy_row).pack(fill="x", pady=1)
-        ttk.Button(bar, text="删除", command=self.delete_row).pack(fill="x", pady=1)
-        self.tree = ttk.Treeview(self, columns=COLUMNS, show="headings", height=3)
-        for c in COLUMNS:
-            self.tree.heading(c, text=HEADINGS[c])
-            self.tree.column(c, width=WIDTHS[c], stretch=c == "name",
-                             anchor="w" if c == "name" else "center")
-        self.tree.pack(fill="both", expand=True, padx=4, pady=2)
-        self.editor = TreeEditor(self.tree, self._spec, self._get, self._commit, COLUMNS)
-        self.tree.bind("<Button-1>", self._click)
+        top = tk.Frame(self, bg=theme.LANE)
+        top.pack(fill="x", pady=(0, 6))
+        tk.Label(top, text="产品", font=theme.TITLE, bg=theme.LANE, fg=theme.TEXT).pack(side="left")
+        tk.Label(top, text="同一类型的多个规格放在同一份报告；不同类型请分开出报告",
+                 font=theme.SMALL, bg=theme.LANE, fg=theme.MUTED).pack(side="left", padx=10)
+        Button(top, "添加产品", self.add_row, kind="soft", icon="add", padx=8, pady=3).pack(side="right")
+        head = tk.Frame(self, bg=theme.LANE)
+        head.pack(fill="x")
+        for i, ((text, weight), w) in enumerate(zip(HEAD, WIDTHS)):
+            head.grid_columnconfigure(i, minsize=w, weight=weight)
+            tk.Label(head, text=text, font=theme.SMALL, bg=theme.LANE, fg=theme.MUTED,
+                     anchor="w" if i == 0 else "center").grid(row=0, column=i, sticky="ew", padx=(2, 8))
+        self.body = tk.Frame(self, bg=theme.LANE)
+        self.body.pack(fill="x")
+        self.rows = []
         self.add_row()
 
-    def _click(self, e):
-        iid, col = self.tree.identify_row(e.y), self.tree.identify_column(e.x)
-        if iid and col:
-            c = COLUMNS[int(col[1:]) - 1]
-            self.tree.after(10, lambda: self.editor.edit(iid, c))
-
-    def _spec(self, iid, col):
-        if col == "name":
-            return ("auto", self.product_names)
-        if col == "unit":
-            return ("combo", UNIT_CHOICES)
-        return "entry"
-
-    def _get(self, iid, col):
-        p = self.rows[iid]
-        if col == "unit":
-            return QTY_UNITS.get(p.unit, {}).get("zh", p.unit)
-        return getattr(p, col)
-
-    def _commit(self, iid, col, value):
-        p = self.rows[iid]
-        value = value.strip()
-        setattr(p, col, qty_unit_key(value) if col == "unit" else value)
-        self._render(iid)
-
-    def _render(self, iid):
-        p = self.rows[iid]
-        self.tree.item(iid, values=(p.name, p.qty, QTY_UNITS.get(p.unit, {}).get("zh", p.unit), p.batch))
-
     def add_row(self, product=None):
-        last = self.get_products(keep_empty=True)[-1:] if self.rows else []
-        p = product or Product(unit=last[0].unit if last else "set", batch=last[0].batch if last else "")
-        iid = f"p{next(self._ids)}"
-        self.rows[iid] = p
-        self.tree.insert("", "end", iid=iid)
-        self._render(iid)
-        self.tree.configure(height=min(max(3, len(self.rows)), 6))
-        return iid
+        last = self.rows[-1].product() if self.rows else None
+        p = product or Product(unit=last.unit if last else "set", batch=last.batch if last else "")
+        row = _Row(self, p)
+        row.frame.pack(fill="x")
+        self.rows.append(row)
+        return row
 
-    def copy_row(self):
-        sel = self.tree.selection()
-        if sel:
-            src = self.rows[sel[0]]
-            self.add_row(Product(src.name, src.qty, src.unit, src.batch))
-
-    def delete_row(self):
-        for iid in self.tree.selection():
-            self.tree.delete(iid)
-            self.rows.pop(iid, None)
+    def remove(self, row):
+        row.frame.destroy()
+        self.rows.remove(row)
         if not self.rows:
             self.add_row()
 
-    def get_products(self, keep_empty=False):
-        self.editor.close(save=True)
-        out = [self.rows[i] for i in self.tree.get_children()]
-        return out if keep_empty else [p for p in out if p.name.strip()]
+    def get_products(self):
+        return [p for p in (r.product() for r in self.rows) if p.name]
 
     def set_products(self, products):
-        self.tree.delete(*self.tree.get_children())
-        self.rows.clear()
+        for r in self.rows:
+            r.frame.destroy()
+        self.rows = []
         for p in products or [Product()]:
             self.add_row(Product(p.name, p.qty, p.unit, p.batch))

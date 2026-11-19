@@ -62,52 +62,44 @@ def main(out):
     a = app_mod.App(root)
     g = a.generate
     pump(root, 1)
-    # 选 ISO 21809-3 / 14B-2，英文
-    g.std_box.current([s.id for s in a.ctx.lib.standards].index("iso21809-3"))
+    std_ids = [s.id for s in a.ctx.lib.standards]
+    # 英文报告：ISO 21809-3 / 14B-2（界面仍显示中文）
+    g.std_box.current(std_ids.index("iso21809-3"))
     g._std_changed(preferred="14B-2")
-    g.lang.set("en")
-    g._lang_changed()
+    g.lang.select("en")
     g.customer.set_text("Petropipe FZE")
     g.products.set_products([Product("80℃ Heat Shrinkable sleeves FRDPΦ159x600x2.3mm", "2615", "set",
-                                     "T250103-41")])
-    for iid, val in zip(g.items.tree.get_children(), ["2.3", "no holiday", "＞7", "10", "1.22", "3.2", "12"]):
-        g.items._commit(iid, "result", val)
-    pump(root, 0.5)
+                                     "T250103-41"), Product("80℃ Heat Shrinkable sleeves FRDPΦ219x600x2.3mm",
+                                                            "800", "set", "T250103-41")])
+    rows = [r for r in g.items.rows if r.var is not None]
+    for r, val in zip(rows, ["2.3", "无漏点", "＞7", "10", "1.22", "3.2", "12", "21.01", "0.85"]):
+        r.var.set(val)
+    g.items.select_row(rows[3])
+    pump(root, 0.8)
     shot(root, out / "1-generate.png")
     g.generate()
     pump(root, 15)
     # 中文 GB 报告，客户带“盛”
-    g.std_box.current([s.id for s in a.ctx.lib.standards].index("gbt23257"))
+    g.std_box.current(std_ids.index("gbt23257"))
     g._std_changed(preferred="hs")
-    g.lang.set("zh")
-    g._lang_changed()
+    g.lang.select("zh")
     g.customer.set_text("四川盛创石油天然气工程勘察设计有限公司")
     g.products.set_products([Product("常温热缩带FRDP406x520/2.5mm", "30", "set", "T260103-39")])
     g.generate()
     pump(root, 15)
-    # 联想：输入“盛”
-    g.customer.set_text("盛")
-    g.customer.show()
-    pump(root, 0.5)
-    shot(root, out / "2-autocomplete.png")
-    g.customer.hide()
-    # 导入样本
     samples = Path(__file__).resolve().parents[1] / "ref" / "samples"
     if samples.exists():
         for rec in [importer.read_record(f) for f in importer.scan_folder(samples)]:
             if rec.customer:
                 importer.import_record(rec, a.ctx.db, a.ctx.settings.reports_dir(), "content")
-    a.nb.select(a.history)
-    a.history.refresh()
-    pump(root, 0.5)
-    shot(root, out / "3-history.png")
+    a.show("history")
+    pump(root, 0.8)
+    shot(root, out / "2-history.png")
     a.history.customer.set_text("盛")
     a.history.refresh()
-    pump(root, 0.3)
-    shot(root, out / "4-history-filter.png")
     print("rows (盛):", len(a.history.tree.get_children()))
     for entry in LOG:
-        print(entry)
+        print(entry[0], str(entry[1])[:160])
     root.destroy()
 
 

@@ -21,7 +21,8 @@ def main():
     cmd = [sys.executable, "-m", "PyInstaller", "--noconfirm", "--clean", "--windowed",
            "--onedir", "--name", "CYCTReport", "--paths", str(ROOT / "src"),
            "--distpath", str(DIST / "_pyi"), "--workpath", str(ROOT / "build"),
-           "--specpath", str(ROOT / "build"), "--hidden-import", "comtypes.client"]
+           "--specpath", str(ROOT / "build"), "--hidden-import", "comtypes.client",
+           "--collect-data", "sv_ttk"]
     for mod in EXCLUDES:
         cmd += ["--exclude-module", mod]
     subprocess.run(cmd + [str(ROOT / "tools" / "launcher.py")], check=True)

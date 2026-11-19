@@ -4,8 +4,8 @@ from dataclasses import dataclass
 from . import naming, office
 from .db import Database
 from .docx_builder import build_docx
-from .i18n import qty_unit_text
-from .models import Report
+from .i18n import qty_unit_text, translate_result
+from .models import Report, has_cjk
 from .settings import Settings
 
 
@@ -36,6 +36,19 @@ def validate(report: Report) -> list:
     if not any(i.kind == "item" for i in report.items):
         problems.append("检测项为空")
     return problems
+
+
+def untranslated(report: Report) -> list:
+    """英/俄报告中仍会出现汉字的检测项（手动新建或改过中文、未补译文的项目）。"""
+    if report.lang == "zh":
+        return []
+    out = []
+    for it in report.items:
+        fields = [it.get(f, report.lang) for f in ("name", "cond", "unit", "req", "method", "note")]
+        fields.append(translate_result(it.result, report.lang))
+        if any(has_cjk(f) for f in fields):
+            out.append(it.get("name", "zh"))
+    return out
 
 
 def generate(report: Report, settings: Settings, db: Database) -> GenerateResult:

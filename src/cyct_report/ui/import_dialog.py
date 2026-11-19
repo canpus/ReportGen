@@ -4,6 +4,7 @@ import tkinter as tk
 from pathlib import Path
 from tkinter import filedialog, messagebox, ttk
 
+from . import theme
 from .. import importer
 from .widgets import TreeEditor, run_background
 
@@ -25,6 +26,7 @@ class ImportDialog(tk.Toplevel):
         super().__init__(master)
         self.ctx, self.on_done = ctx, on_done
         self.title("导入以前手工制作的报告")
+        self.configure(bg=theme.LANE)
         self.geometry("1350x600")
         self.transient(master)
         self.records = {}

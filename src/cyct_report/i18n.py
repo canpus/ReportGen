@@ -53,6 +53,36 @@ MONTHS_EN = ["January", "February", "March", "April", "May", "June", "July",
              "August", "September", "October", "November", "December"]
 
 
+# 实测值中常见的中文写法 → 英/俄（生成英俄报告时自动替换，长词在前）
+RESULT_PHRASES = [
+    ("无裂纹、无流淌、无垂滴", "No cracks, no flow, no dripping", "Без трещин, потёков и капель"),
+    ("无鼓泡、无剥离、膜下无水", "No blistering, no disbondment, no water under film",
+     "Без вздутий и отслаивания, без воды под плёнкой"),
+    ("无分离、撕裂或裂纹", "No separation, tears or cracks", "Без отслаивания, разрывов и трещин"),
+    ("不合格", "Fail", "Не выдержано"),
+    ("合格", "Pass", "Выдержано"),
+    ("无漏点", "No holiday", "Отсутствие пробоя"),
+    ("无击穿", "No breakdown", "Без пробоя"),
+    ("内聚破坏", "cohesive failure", "когезионный отрыв"),
+    ("界面破坏", "adhesive failure", "адгезионный отрыв"),
+    ("无裂纹", "No cracks", "Без трещин"),
+    ("无滴落", "No dripping", "Без стекания"),
+    ("无缺陷", "No defect", "Без дефектов"),
+    ("无结晶", "No crystallization", "Без кристаллизации"),
+]
+
+
+def translate_result(text: str, lang: str) -> str:
+    if lang == "zh" or not text:
+        return text
+    idx = 1 if lang == "en" else 2
+    for phrase in RESULT_PHRASES:
+        # 紧跟数字或字母时补一个空格：133内聚破坏 → 133 cohesive failure
+        text = re.sub(r"(?<=[0-9A-Za-z.])" + re.escape(phrase[0]), " " + phrase[idx], text)
+        text = text.replace(phrase[0], phrase[idx])
+    return text
+
+
 def qty_unit_text(key: str, lang: str) -> str:
     u = QTY_UNITS.get(key)
     return u[lang] if u else key

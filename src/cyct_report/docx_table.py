@@ -13,7 +13,7 @@ from docx.oxml.ns import qn
 from docx.shared import Pt, Twips
 
 from .docx_text import add_rich
-from .i18n import LABELS
+from .i18n import LABELS, translate_result
 from .presets import render_cond
 
 COL_WIDTHS = [2420, 1100, 900, 1800, 1650, 1723]   # twips，合计 9593，与原报告表宽一致
@@ -31,7 +31,7 @@ def _cell_rows(items, lang, tmax):
         if lang != "zh" and not cond.strip():
             cond = "—"
         rows.append(("item", it.get("name", lang), cond, it.get("unit", lang),
-                     it.get("req", lang), it.result, it.get("method", lang)))
+                     it.get("req", lang), translate_result(it.result, lang), it.get("method", lang)))
     return rows
 
 

@@ -1,11 +1,12 @@
-"""主窗口。"""
+"""主窗口：顶栏（品牌、页面切换、常用操作）+ 内容区。"""
 import ctypes
 import os
 import subprocess
 import sys
 import tkinter as tk
-from tkinter import messagebox, ttk
+from tkinter import messagebox
 
+from . import theme
 from .. import __version__
 from ..db import Database
 from ..presets import Library
@@ -13,6 +14,8 @@ from ..settings import Settings
 from .generate_tab import GenerateTab
 from .history_tab import HistoryTab
 from .import_dialog import ImportDialog
+from .rounded import Button
+from .segmented import Segmented
 from .settings_dialog import SettingsDialog
 
 TITLE = "CYCT 出厂检测报告生成器"
@@ -38,60 +41,55 @@ class App:
     def __init__(self, root):
         self.root = root
         root.title(f"{TITLE}  v{__version__}")
-        root.geometry("1360x860")
-        root.minsize(1100, 680)
-        self._style()
+        root.geometry("1400x900")
+        root.minsize(1180, 720)
+        try:
+            root.state("zoomed")          # 默认最大化，检测项能多显示几行
+        except tk.TclError:
+            pass
+        theme.apply(root)
         try:
             self.ctx = AppContext()
         except Exception as e:     # 预置库或数据库无法读取时给出明确提示
             messagebox.showerror(TITLE, f"启动失败：{e}")
             raise
-        self.nb = ttk.Notebook(root)
-        self.nb.pack(fill="both", expand=True, padx=6, pady=6)
-        self.history = HistoryTab(self.nb, self.ctx, on_import=self.open_import)
-        self.generate = GenerateTab(self.nb, self.ctx, on_generated=self.history.refresh)
-        self.nb.add(self.generate, text="  生成报告  ")
-        self.nb.add(self.history, text="  历史报告  ")
-        self.nb.bind("<<NotebookTabChanged>>", self._tab_changed)
-        self._menu()
+        self._topbar()
+        self.content = tk.Frame(root, bg=theme.SHELL)
+        self.content.pack(fill="both", expand=True, padx=18, pady=(4, 16))
+        self.history = HistoryTab(self.content, self.ctx, on_import=self.open_import)
+        self.generate = GenerateTab(self.content, self.ctx, on_generated=self.history.refresh)
+        self.show("generate")
 
-    def _style(self):
-        style = ttk.Style(self.root)
-        if "vista" in style.theme_names():
-            style.theme_use("vista")
-        default = ("Microsoft YaHei UI", 9)
-        self.root.option_add("*Font", default)
-        for name in ("TLabel", "TButton", "TRadiobutton", "TCheckbutton", "TEntry", "TCombobox",
-                     "TLabelframe.Label", "TNotebook.Tab"):
-            style.configure(name, font=default)
-        style.configure("Treeview", font=default, rowheight=24)
-        style.configure("Treeview.Heading", font=("Microsoft YaHei UI", 9, "bold"))
+    def _topbar(self):
+        bar = tk.Frame(self.root, bg=theme.SHELL)
+        bar.pack(fill="x", padx=18, pady=(14, 8))
+        logo = tk.Label(bar, text=theme.ICONS["doc"], font=theme.icon_font(16), bg=theme.SHELL, fg=theme.ACCENT)
+        logo.pack(side="left")
+        tk.Label(bar, text="出厂检测报告", font=theme.BRAND, bg=theme.SHELL, fg=theme.TEXT).pack(side="left", padx=(8, 4))
+        tk.Label(bar, text=f"v{__version__}", font=theme.SMALL, bg=theme.SHELL, fg=theme.FAINT).pack(side="left")
+        self.tabs = Segmented(bar, [("generate", "生成报告"), ("history", "历史报告")], "generate",
+                              command=self.show, font=theme.BOLD, padx=16, pady=5)
+        self.tabs.pack(side="left", padx=28)
+        for text, icon, cmd in (("设置", "settings", self.open_settings),
+                                ("报告文件夹", "folder", lambda: self.ctx.open_file(self.ctx.settings.reports_dir())),
+                                ("导入旧报告", "import", self.open_import)):
+            Button(bar, text, cmd, kind="ghost", icon=icon, padx=10, pady=5).pack(side="right", padx=(4, 0))
 
-    def _menu(self):
-        m = tk.Menu(self.root)
-        f = tk.Menu(m, tearoff=False)
-        f.add_command(label="导入旧报告…", command=self.open_import)
-        f.add_command(label="打开报告文件夹", command=lambda: self.ctx.open_file(
-            self.ctx.settings.reports_dir()))
-        f.add_separator()
-        f.add_command(label="退出", command=self.root.destroy)
-        m.add_cascade(label="文件", menu=f)
-        s = tk.Menu(m, tearoff=False)
-        s.add_command(label="设置…", command=lambda: SettingsDialog(self.root, self.ctx.settings))
-        s.add_command(label="重新加载标准库", command=self.reload_presets)
-        m.add_cascade(label="工具", menu=s)
-        h = tk.Menu(m, tearoff=False)
-        h.add_command(label="关于", command=lambda: messagebox.showinfo(
-            "关于", f"{TITLE}\n版本 {__version__}\n\n标准库：presets 文件夹\n报告模板：templates 文件夹"))
-        m.add_cascade(label="帮助", menu=h)
-        self.root.configure(menu=m)
-
-    def _tab_changed(self, _e):
-        if self.nb.select() == str(self.history):
+    def show(self, page):
+        self.tabs.select(page, notify=False)
+        for name, frame in (("generate", self.generate), ("history", self.history)):
+            if name == page:
+                frame.pack(fill="both", expand=True)
+            else:
+                frame.pack_forget()
+        if page == "history":
             self.history.refresh()
 
     def open_import(self):
         ImportDialog(self.root, self.ctx, on_done=self.history.refresh)
+
+    def open_settings(self):
+        SettingsDialog(self.root, self.ctx.settings, on_reload=self.reload_presets)
 
     def reload_presets(self):
         self.ctx.lib.reload()

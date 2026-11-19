@@ -70,3 +70,25 @@ def test_en12068_class30_excludes_tmax_rows():
     std = lib.standard("en12068")
     items = lib.build_items(std, lib.template("en12068", "C3-30"))
     assert all(i.get("cond", "en") != "Tmax" for i in items)
+
+
+def test_ml_set_chinese_edit_rules():
+    from cyct_report.models import ml, ml_set
+    preset = {"zh": "无漏点", "en": "No holiday", "ru": "Отсутствие пробоя"}
+    assert ml_set(preset, "zh", "≥2.5") == ml("≥2.5")                     # 数值三语同步
+    assert ml_set(preset, "zh", "无针孔")["en"] == "No holiday"            # 已有译文保留
+    custom = ml("自定义项")
+    assert ml_set(custom, "zh", "自定义项B")["en"] == "自定义项B"           # 无译文时跟随中文
+
+
+def test_result_phrases_translated_and_untranslated_warning():
+    from cyct_report.i18n import translate_result
+    from cyct_report.models import Item, Report, ml
+    from cyct_report.service import untranslated
+    assert translate_result("133内聚破坏", "en") == "133 cohesive failure"
+    assert translate_result("无漏点", "ru") == "Отсутствие пробоя"
+    assert translate_result("无漏点", "zh") == "无漏点"
+    known = Item(name={"zh": "厚度", "en": "Thickness", "ru": "Толщина"}, req=ml("≥2"), result="无漏点")
+    custom = Item(name=ml("补伤片剥离强度"), req=ml("≥2"))
+    rep = Report(lang="en", items=[known, custom])
+    assert untranslated(rep) == ["补伤片剥离强度"]

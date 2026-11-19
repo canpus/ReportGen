@@ -1,0 +1,42 @@
+{
+  "id": "adnoc-ages-sp-07-006",
+  "name": "ADNOC AGES-SP-07-006",
+  "order": 50,
+  "method_suffix": "",
+  "source": "AGES-SP-07-006 Rev.1 Table C (PE HSS), Table D (PP HSS)",
+  "tables": {
+    "cd": {
+      "cols": ["PE", "PP"],
+      "rows": [
+        ["{ad_visual}", "—", "—", "{r_no_defect}", "ISO 21809-3"],
+        ["{ad_pulloff}", "23℃", "MPa", "≥15", "ASTM D4541"],
+        ["{thickness}", "—", "mm", "≥3", "ISO 21809-3"],
+        ["{holiday_5kv}", "—", "—", "{r_no_holiday}", "ISO 21809-3"],
+        [["{ad_peel}", "{ad_peel_pp}"], "23℃", "N/mm", "≥5", "ISO 21809-3"],
+        [["{ad_peel}", "{ad_peel_pp}"], ["80℃", "105℃"], "N/mm", ["≥0.3", "≥3"], "ISO 21809-3"],
+        [["{ad_peel_hw}", "{ad_peel_hw_pp}"], "23℃", "P₁₀₀/P₀", "≥0.75", "ISO 21809-3"],
+        ["{impact_holiday}", "23℃", "—", "{r_no_holiday}", "ISO 21809-3"],
+        ["{indent_residual}", ["80℃", "105℃"], "mm", ["≥0.6", "≥1"], "ISO 21809-3"],
+        ["{cd_28d}", "23℃", "mm", "≤5", "ISO 21809-3"],
+        ["{cd_28d}", ["80℃", "95℃"], "mm", "≤10", "ISO 21809-3"],
+        ["{ad_elong}", "—", "%", ">250", "ISO 21809-3"],
+        ["{lap_shear_10}", "23℃", "N/mm²", ["≥3", "≥5"], "ISO 21809-3"],
+        ["{lap_shear_10}", ["80℃", "105℃"], "N/mm²", ["≥0.2", "≥1"], "ISO 21809-3"],
+        [["{ad_ta}", "{ad_ta_pp}"], "23℃", "E₁₀₀/E₇₀", "≥0.75", "ISO 21809-3"],
+        [["{ad_ta}", "{ad_ta_pp}"], "23℃", "P₁₀₀/P₇₀", "≥0.75", "ISO 21809-3"],
+        ["{ad_tensile}", "—", "MPa", ">20", "ASTM D638"],
+        ["{ad_water_abs}", "—", "%", "<0.05", "ASTM D570"],
+        [["{ad_overlap}", "{ad_overlap_pp}"], "—", "mm", "≥50", "Visual"],
+        ["{ad_hw_epoxy}", ["80℃", "95℃"], "—", "{r_no_loss_adh}", "API RP 5L9"],
+        ["{ad_epoxy_fbe}", "—", "psi", ">750", "ASTM D4541"],
+        ["{ad_destructive}", "—", "—", "{r_even_dist}", "AGES-SP-07-006"]
+      ]
+    }
+  },
+  "templates": [
+    {"id": "pe", "parts": [["cd", "PE"]], "tmax": 80, "display": "ADNOC AGES-SP-07-006 (PE HSS)",
+     "label": {"zh": "Table C：PE热缩带（3LPE管线补口）", "en": "Table C: PE heat shrink sleeves", "ru": "Таблица C: ПЭ термоусаживающиеся манжеты"}},
+    {"id": "pp", "parts": [["cd", "PP"]], "tmax": 105, "display": "ADNOC AGES-SP-07-006 (PP HSS)",
+     "label": {"zh": "Table D：PP热缩带（3LPP管线补口）", "en": "Table D: PP heat shrink sleeves", "ru": "Таблица D: ПП термоусаживающиеся манжеты"}}
+  ]
+}

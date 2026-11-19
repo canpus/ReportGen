@@ -1,0 +1,37 @@
+{
+  "id": "gasco-dgs-1470-006",
+  "name": "GASCO DGS 1470-006 Rev 0",
+  "order": 70,
+  "method_suffix": "",
+  "source": "DGS 1470-006 Rev 0 clause 10.4.5",
+  "tables": {
+    "t1045": {
+      "rows": [
+        {"g": "{g_backing}"},
+        ["{ga_tensile}", "ATT", "MPa", ">20", "ASTM D638"],
+        ["{ga_elong}", "ATT", "%", ">400", "ASTM D638"],
+        {"g": "{g_adhesive}"},
+        ["{ga_lap}", "ATT", "N/cm²", ">500", "ISO 21809-3"],
+        ["{ga_lap}", "UTT", "N/cm²", ">50", "ISO 21809-3"],
+        ["{ga_melt}", "—", "℃", ">140", "ASTM D3418"],
+        {"g": "{g_installed}"},
+        ["{ga_thk_body}", "—", "mm", "≥3.0", "ISO 2808"],
+        ["{ga_thk_weld}", "—", "mm", "≥2.8", "ISO 2808"],
+        ["{ga_impact}", "ATT", "J", ">25", "ISO 21809-3"],
+        ["{ga_hardness}", "ATT", "Shore D", "55~70", "ASTM D2240"],
+        ["{ga_indent}", "UTT", "mm", ">0.6", "ISO 21809-3"],
+        ["{ga_adhesion}", "ATT", "N/cm", ">40", "ISO 21809-3"],
+        ["{ga_adhesion}", "UTT", "N/cm", ">20", "ISO 21809-3"],
+        ["{ga_dielectric}", "ATT", "kV", ">30", "ASTM D149"],
+        ["{cd_28d}", "ATT", "mm", "<8", "ISO 21809-3"],
+        ["{cd_28d}", "95℃", "mm", "<15", "ISO 21809-3"],
+        ["{ga_hw}", "UTT", "—", "{r_ga_hw}", "ISO 21809-3"],
+        ["{holiday}", "—", "—", "{r_ga_holiday}", "ISO 21809-3"]
+      ]
+    }
+  },
+  "templates": [
+    {"id": "pp-hss", "parts": [["t1045", null]], "tmax": 110, "display": "GASCO DGS 1470-006",
+     "label": {"zh": "3LPP管线补口用PP热缩带（最高110℃）", "en": "PP heat shrink sleeves for 3LPP coated pipe (up to 110 °C)", "ru": "ПП термоусаживающиеся манжеты для труб с покрытием 3LPP (до 110 °C)"}}
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "id": "pdo-sp-2389",
+  "name": "PDO SP-2389 (2021)",
+  "order": 60,
+  "method_suffix": "",
+  "source": "PDO SP-2389 Version 1 (2021) Table 13.1, Table 14.1；冷缠带按 ISO 21809-3 Table 10",
+  "tables": {
+    "t141": {
+      "cols": ["PE", "PP"],
+      "rows": [
+        ["{pdo_visual}", "—", "—", "{r_free_blisters}", "Section 14.5.1"],
+        ["{min_thickness}", "23℃", "—", "{r_qual_thk}", "Section 14.5.2"],
+        ["{holiday}", "—", "—", "{r_no_holiday}", "Section 14.5.3 / ISO 21809-3"],
+        ["{pdo_adhesion}", "23℃", "N/mm", [">5", ">15"], "Section 14.5.4"],
+        ["{pdo_adhesion}", "Tmax", "N/mm", [">0.3", ">4"], "Section 14.5.4"],
+        ["{cd_28d}", "23℃", "mm", ["≤7", "≤5.0"], "Section 14.5.5"],
+        ["{cd_28d}", "Tmax", "mm", ["≤15", "≤10"], "Section 14.5.5"],
+        ["{pdo_hw28}", "23℃", "—", ["{r_pdo_hw_pe}", "{r_pdo_hw_pp}"], "Section 14.5.6"],
+        ["{impact}", "23℃", "J", "≥15", "Section 14.5.7"],
+        ["{pdo_indent}", "23℃, Tmax", "—", "{r_pdo_noholiday_06}", "Section 14.5.8"],
+        ["{lap_shear}", "23℃", "N/mm²", ["≥5", ">9"], "Section 14.9.9"],
+        ["{lap_shear}", "Tmax", "N/mm²", ["≥0.1", ">1"], "Section 14.9.9"],
+        ["{pdo_ta}", "23℃", "—", ["{r_pdo_ta_pe}", "{r_pdo_ta_pp}"], "Section 14.9.10"],
+        ["{pdo_uv}", "23℃", "—", "{r_uv_pdo}", "Annex R"]
+      ]
+    },
+    "t131": {
+      "rows": [
+        ["{pdo_visual}", "—", "—", "{r_free_blisters}", "Section 13.5.1"],
+        ["{min_thickness}", "23℃", "—", "{r_qual_thk}", "Section 13.5.2"],
+        ["{holiday}", "—", "—", "{r_no_holiday}", "Section 13.5.3 / ISO 21809-3"],
+        ["{impact}", "23℃, Tmax", "J", "≥15", "Section 13.5.4"],
+        ["{pdo_indent}", "23℃, Tmax", "—", "{r_pdo_noholiday_06}", "Section 13.5.5"],
+        ["{cd_28d}", "23℃, Tmax", "mm", "<1", "Section 13.5.7"],
+        ["{pdo_peel_oo}", "23℃", "N/mm", ">0.4", "Section 13.5.8"],
+        ["{pdo_peel_oo}", "Tmax", "N/mm", ">0.05", "Section 13.5.8"],
+        ["{pdo_peel_io}", "23℃", "N/mm", ">0.4", "Section 13.5.8"],
+        ["{pdo_peel_io}", "Tmax", "N/mm", ">0.05", "Section 13.5.8"],
+        ["{pdo_peel_off}", "23℃", "—", "{r_pdo_cov_004}", "Section 13.5.9"],
+        ["{pdo_peel_off}", "Tmax", "—", "{r_pdo_cov_002}", "Section 13.5.9"],
+        ["{pdo_ta}", "23℃", "—", "{r_pdo_cov_02}", "Section 13.5.10"],
+        ["{lap_shear}", "23℃", "—", "{r_pdo_ls_0004}", "Section 13.5.11"],
+        ["{lap_shear}", "Tmax", "—", "{r_pdo_ls_0002}", "Section 13.5.11"],
+        ["{pdo_hw28}", "23℃", "—", "{r_pdo_cov_02}", "Section 13.5.12"],
+        ["{drip}", "Tmax+20/80", "—", "{r_no_drip}", "Section 13.5.14 / ISO 21809-3"]
+      ]
+    }
+  },
+  "templates": [
+    {"id": "hss-pe", "parts": [["t141", "PE"]], "tmax": 80, "display": "PDO SP-2389 (PE backed HSS)",
+     "label": {"zh": "Table 14.1：PE基材热缩带", "en": "Table 14.1: PE backed heat shrink sleeves", "ru": "Таблица 14.1: манжеты с основой из ПЭ"}},
+    {"id": "hss-pp", "parts": [["t141", "PP"]], "tmax": 110, "display": "PDO SP-2389 (PP backed HSS)",
+     "label": {"zh": "Table 14.1：PP基材热缩带", "en": "Table 14.1: PP backed heat shrink sleeves", "ru": "Таблица 14.1: манжеты с основой из ПП"}},
+    {"id": "visco", "parts": [["t131", null]], "tmax": 70, "display": "PDO SP-2389 (visco-elastic)",
+     "label": {"zh": "Table 13.1：粘弹体自愈合缠绕体系", "en": "Table 13.1: visco-elastic self-healing wrapping", "ru": "Таблица 13.1: вязкоупругая самовосстанавливающаяся обмотка"}},
+    {"id": "tape", "parts": [["iso21809-3:t10", "12-2"]], "tmax": 80, "display": "PDO SP-2389 / ISO 21809-3 Type 12",
+     "label": {"zh": "冷缠聚合物胶带：按ISO 21809-3 Table 10（默认12-2列）", "en": "Cold-applied polymeric tape per ISO 21809-3 Table 10", "ru": "Полимерная лента холодного нанесения по ISO 21809-3, таблица 10"}}
+  ]
+}

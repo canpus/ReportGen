@@ -1,0 +1,34 @@
+{
+  "id": "din30672",
+  "name": "DIN 30672:2000-12",
+  "order": 30,
+  "method_suffix": "EN 12068",
+  "source": "DIN 30672:2000-12 clause 5, 6（指标沿用 EN 12068 Table 1/2，C 级仅用第三列）",
+  "tables": {
+    "extra": {
+      "rows": [
+        {"g": "{g_optional}"},
+        ["{din_saponification}", "—", "mg KOH/g", "≤25", "Annex L"],
+        ["{din_naoh_e}", "50℃", "—", "0.75~1.25", "DIN 30672 6.2.3"],
+        ["{din_naoh_s}", "50℃", "—", "0.75~1.25", "DIN 30672 6.2.3"],
+        ["{din_naoh_b}", "50℃", "—", "0.75~1.25", "DIN 30672 6.2.3", {"opt": true}],
+        ["{din_naoh_100_70}", "50℃", "—", "≥0.8", "Annex A"],
+        ["{din_patch_shear}", "50℃", "N/mm²", "≥0.25", "Annex D", {"opt": true}]
+      ]
+    }
+  },
+  "templates": [
+    {"id": "A-30", "parts": [["en12068:t1", "A"], ["en12068:t2", null], ["extra", null]], "tc": "30", "tmax": 30, "display": "DIN 30672 – A 30",
+     "label": {"zh": "A级，温度等级30（≤30℃）", "en": "Class A, class 30", "ru": "Класс A, класс 30"}},
+    {"id": "A-50", "parts": [["en12068:t1", "A"], ["en12068:t2", null], ["extra", null]], "tc": "50", "tmax": 50, "display": "DIN 30672 – A 50",
+     "label": {"zh": "A级，温度等级50（≤50℃）", "en": "Class A, class 50", "ru": "Класс A, класс 50"}},
+    {"id": "B-30", "parts": [["en12068:t1", "B"], ["en12068:t2", null], ["extra", null]], "tc": "30", "tmax": 30, "display": "DIN 30672 – B 30",
+     "label": {"zh": "B级，温度等级30（≤30℃）", "en": "Class B, class 30", "ru": "Класс B, класс 30"}},
+    {"id": "B-50", "parts": [["en12068:t1", "B"], ["en12068:t2", null], ["extra", null]], "tc": "50", "tmax": 50, "display": "DIN 30672 – B 50",
+     "label": {"zh": "B级，温度等级50（≤50℃）", "en": "Class B, class 50", "ru": "Класс B, класс 50"}},
+    {"id": "C-30", "parts": [["en12068:t1", "C3"], ["en12068:t2", null], ["extra", null]], "tc": "30", "tmax": 30, "display": "DIN 30672 – C 30",
+     "label": {"zh": "C级（取EN 12068第三列），温度等级30", "en": "Class C (EN 12068 third column), class 30", "ru": "Класс C (третий столбец EN 12068), класс 30"}},
+    {"id": "C-50", "parts": [["en12068:t1", "C3"], ["en12068:t2", null], ["extra", null]], "tc": "50", "tmax": 50, "display": "DIN 30672 – C 50",
+     "label": {"zh": "C级（取EN 12068第三列），温度等级50", "en": "Class C (EN 12068 third column), class 50", "ru": "Класс C (третий столбец EN 12068), класс 50"}}
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "id": "gbt23257",
+  "name": "GB/T 23257-2017",
+  "order": 5,
+  "method_suffix": "",
+  "source": "CYCT 出货检测报告（GB/T 23257-2017 热收缩带，CY/CT-FR-QA-710）",
+  "tables": {
+    "hs": {
+      "rows": [
+        {"g": "{g_gb_primer}", "note": "{n_gb_primer}"},
+        ["{gb_nonvolatile}", "", "%", "≥95", "GB/T 1725"],
+        ["{gb_shear}", "", "MPa", "≥5.0", "GB/T 7124ᵃ"],
+        ["{gb_cd}", "{c_gb_65_48}", "mm", "≤8", "GB/T 23257 Annex D"],
+        ["{gb_cd}", "{c_gb_23_30d}", "mm", "≤15", "GB/T 23257 Annex D"],
+        {"g": "{g_gb_backing}", "note": "{n_gb_backing}"},
+        ["{gb_tensile}", "", "MPa", "≥17", "GB/T 1040.2"],
+        ["{gb_strain}", "", "%", "≥400", "GB/T 1040.2"],
+        ["{gb_vicat}", "", "℃", "≥90", "GB/T 1633"],
+        ["{gb_brittle}", "", "℃", "≤-65", "GB/T 5470"],
+        ["{gb_dielectric}", "", "MV/m", "≥25", "GB/T 1408.1"],
+        ["{gb_volres}", "", "Ω·m", "≥1×10^13", "GB/T 1410"],
+        ["{gb_escr}", "", "h", "≥1000", "GB/T 1842"],
+        ["{gb_chem}", "10%HCl", "%", "≥85", "GB/T 23257 Annex H"],
+        ["{gb_chem}", "10%NaOH", "%", "≥85", "GB/T 23257 Annex H"],
+        ["{gb_chem}", "10%NaCl", "%", "≥85", "GB/T 23257 Annex H"],
+        ["{gb_ta}", "{c_gb_tensile}", "MPa", "≥14", "GB/T 1040.2"],
+        ["{gb_ta}", "{c_gb_strain}", "%", "≥300", "GB/T 1040.2"],
+        ["{gb_shock}", "", "/", "{r_gb_shock}", "GB/T 23257"],
+        {"g": "{g_gb_adhesive}", "note": "{n_gb_adhesive}"},
+        ["{gb_softening}", "", "℃", "≥90", "GB/T 15332"],
+        ["{gb_lap_ss}", "23℃", "MPa", "≥1.0", "GB/T 7124ᵇ"],
+        ["{gb_lap_ss}", "50℃", "MPa", "≥0.07", "GB/T 7124ᵇ"],
+        ["{gb_lap_pe}", "23℃", "MPa", "≥1.0", "GB/T 7124ᵇ"],
+        ["{gb_lap_pe}", "50℃", "MPa", "≥0.07", "GB/T 7124ᵇ"],
+        ["{gb_brittle}", "", "℃", "≤-15", "GB/T 23257"],
+        {"g": "{g_gb_system}"},
+        ["{gb_impact}", "", "J", "≥15", "GB/T 23257"],
+        ["{gb_peel_pipe}", "23℃", "N/cm", "{r_gb_coh50}", "GB/T 23257"],
+        ["{gb_peel_pipe}", "50℃", "N/cm", "{r_gb_coh3}", "GB/T 23257"],
+        ["{gb_peel_pe}", "23℃", "N/cm", "{r_gb_coh50}", "GB/T 23257"],
+        ["{gb_peel_pe}", "50℃", "N/cm", "{r_gb_coh3}", "GB/T 23257"],
+        ["{gb_cd_system}", "", "mm", "≤20", "GB/T 23257"],
+        ["{gb_hw30}", "", "%", "≥75", "GB/T 23257"],
+        ["{gb_hw30}", "", "%", "≥75", "GB/T 23257"],
+        ["{gb_hw120}", "", "", "{r_gb_hw120}", "GB/T 23257"],
+        ["{gb_ta_peel}", "", "%", "≥75", "GB/T 23257"],
+        ["{gb_ta_peel}", "", "%", "≥75", "GB/T 23257"]
+      ]
+    }
+  },
+  "templates": [
+    {"id": "hs", "parts": [["hs", null]], "tmax": null, "display": "GB/T 23257-2017",
+     "label": {"zh": "热收缩带（配无溶剂环氧底漆），按CYCT现行报告格式", "en": "Heat-shrinkable sleeve with solvent-free epoxy primer", "ru": "Термоусаживающаяся лента с бессольвентной эпоксидной грунтовкой"}}
+  ]
+}

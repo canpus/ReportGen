@@ -1,0 +1,81 @@
+{
+  "id": "en12068",
+  "name": "EN 12068:1998",
+  "order": 20,
+  "method_suffix": "",
+  "source": "BS EN 12068:1999 Table 1, Table 2",
+  "_note": "列 A、B 为机械强度等级；C1/C2/C3 为 C 级的三组可选指标（4.1.2.4）。tc 为温度等级：30 / 50 / HT；行选项 tc 表示该行仅适用的温度等级。",
+  "tables": {
+    "t1": {
+      "cols": ["A", "B", "C1", "C2", "C3"],
+      "rows": [
+        ["{en_impact}", "23℃", "J", ["≥4", "≥8", "≥15", "≥15", "≥15"], "Annex H"],
+        ["{en_indent_pressure}", "Tc", "N/mm²", ["0.1", "1.0", "10.0", "10.0", "10.0"], "Annex G"],
+        ["{en_indent_residual}", "Tc", "mm", "≥0.6", "Annex G"],
+        ["{en_seir}", "23℃", "Ω·m²", ["≥10^6", "≥10^8", "≥10^8", "≥10^8", "≥10^8"], "Annex J"],
+        ["{en_seir_ratio}", "23℃", "—", "≥0.8", "Annex J"],
+        ["{en_cd}", "23℃", "mm", ["≤20", "≤20", "≤10", "≤15", "≤20"], "Annex K"],
+        ["{en_cd}", "Tmax", "mm", "{r_agreement}", "Annex K", {"tc": ["50", "HT"]}],
+        ["{en_peel_ii_oi}", "23℃", "N/mm", ["≥0.8", "≥0.8", "≥1.0", "≥1.5", "≥1.5"], "Annex B"],
+        ["{en_peel_ii_oi}", "Tmax", "N/mm", "≥0.2", "Annex B", {"tc": ["50", "HT"]}],
+        ["{en_peel_oo}", "23℃", "N/mm", "≥0.2", "Annex B"],
+        ["{en_peel_oo}", "Tmax", "N/mm", "≥0.2", "Annex B", {"tc": ["50", "HT"]}],
+        ["{en_peel_pipe}", "23℃", "N/mm", ["≥0.4", "≥0.4", "≥0.5", "≥0.75", "≥1.0"], "Annex C"],
+        ["{en_peel_pipe}", "Tmax", "N/mm", ["≥0.04", "≥0.04", "≥0.05", "≥0.075", "≥0.1"], "Annex C", {"tc": ["50", "HT"]}],
+        ["{en_peel_factory}", "23℃", "N/mm", ["≥0.2", "≥0.2", "≥0.4", "≥0.4", "≥0.4"], "Annex C"],
+        ["{en_peel_factory}", "Tmax", "N/mm", ["≥0.02", "≥0.02", "≥0.04", "≥0.04", "≥0.04"], "Annex C", {"tc": ["50", "HT"]}],
+        ["{en_lap_shear}", "23℃", "N/mm²", "≥0.05", "Annex D", {"tc": ["30"]}],
+        ["{en_lap_shear}", "Tmax", "N/mm²", "≥0.05", "Annex D", {"tc": ["50", "HT"]}]
+      ]
+    },
+    "t2": {
+      "rows": [
+        ["{en_ta_tape}", "—", "—", "1.25≥S₁₀₀/S₀≥0.75", "Annex E"],
+        ["{en_ta_tape}", "—", "—", "S₁₀₀/S₇₀≥0.8", "Annex E"],
+        ["{en_ta_burst}", "—", "—", "1.25≥B₁₀₀/B₀≥0.75", "Annex E", {"opt": true}],
+        ["{en_ta_burst}", "—", "—", "B₁₀₀/B₇₀≥0.8", "Annex E", {"opt": true}],
+        ["{en_ta_elong}", "—", "—", "1.25≥E₁₀₀/E₀≥0.75", "Annex E"],
+        ["{en_ta_elong}", "—", "—", "E₁₀₀/E₇₀≥0.8", "Annex E"],
+        ["{en_ta_peel_layer}", "—", "—", "P₁₀₀/P_T≥0.75", "Annex E"],
+        ["{en_ta_peel_layer}", "—", "—", "P₁₀₀/P₇₀≥0.8", "Annex E"],
+        ["{en_ta_peel_pipe}", "—", "—", "A₁₀₀/A_T≥0.75", "Annex E"],
+        ["{en_ta_peel_pipe}", "—", "—", "A₁₀₀/A₇₀≥0.8", "Annex E"],
+        ["{en_uv_elong}", "—", "—", "1.25≥E_X/E₀≥0.75", "Annex F", {"opt": true}],
+        ["{en_uv_tape}", "—", "—", "1.25≥S_X/S₀≥0.75", "Annex F", {"opt": true}],
+        ["{en_uv_burst}", "—", "—", "1.25≥B_X/B₀≥0.75", "Annex F", {"opt": true}],
+        ["{en_microbio}", "—", "—", "{r_convention}", "Annex M", {"opt": true}],
+        ["{en_lowtemp_flex}", "-20℃", "—", "{r_no_sep}", "Annex N", {"opt": true}],
+        ["{en_lowtemp_unroll}", "-5℃", "—", "{r_no_sep}", "Annex P", {"opt": true}],
+        ["{en_drip_petro}", "—", "—", "{r_no_drip}", "Annex Q", {"opt": true}]
+      ]
+    }
+  },
+  "templates": [
+    {"id": "A-30", "parts": [["t1", "A"], ["t2", null]], "tc": "30", "tmax": 30, "display": "EN 12068 A 30",
+     "label": {"zh": "A级（低机械强度），温度等级30", "en": "Class A, temperature class 30", "ru": "Класс A, температурный класс 30"}},
+    {"id": "A-50", "parts": [["t1", "A"], ["t2", null]], "tc": "50", "tmax": 50, "display": "EN 12068 A 50",
+     "label": {"zh": "A级（低机械强度），温度等级50", "en": "Class A, temperature class 50", "ru": "Класс A, температурный класс 50"}},
+    {"id": "B-30", "parts": [["t1", "B"], ["t2", null]], "tc": "30", "tmax": 30, "display": "EN 12068 B 30",
+     "label": {"zh": "B级（中机械强度），温度等级30", "en": "Class B, temperature class 30", "ru": "Класс B, температурный класс 30"}},
+    {"id": "B-50", "parts": [["t1", "B"], ["t2", null]], "tc": "50", "tmax": 50, "display": "EN 12068 B 50",
+     "label": {"zh": "B级（中机械强度），温度等级50", "en": "Class B, temperature class 50", "ru": "Класс B, температурный класс 50"}},
+    {"id": "B-HT", "parts": [["t1", "B"], ["t2", null]], "tc": "HT", "tmax": 60, "display": "EN 12068 B HT {tmax}",
+     "label": {"zh": "B级，高温等级HT（Tmax>50℃，按实际填写）", "en": "Class B, temperature class HT (Tmax > 50 °C)", "ru": "Класс B, температурный класс HT (Tmax > 50 °C)"}},
+    {"id": "C1-30", "parts": [["t1", "C1"], ["t2", null]], "tc": "30", "tmax": 30, "display": "EN 12068 C 30",
+     "label": {"zh": "C级（高机械强度）第1组指标，温度等级30", "en": "Class C (option 1), temperature class 30", "ru": "Класс C (вариант 1), температурный класс 30"}},
+    {"id": "C1-50", "parts": [["t1", "C1"], ["t2", null]], "tc": "50", "tmax": 50, "display": "EN 12068 C 50",
+     "label": {"zh": "C级第1组指标（阴极剥离≤10 mm），温度等级50", "en": "Class C (option 1: CD ≤ 10 mm), temperature class 50", "ru": "Класс C (вариант 1: КО ≤ 10 мм), температурный класс 50"}},
+    {"id": "C1-HT", "parts": [["t1", "C1"], ["t2", null]], "tc": "HT", "tmax": 60, "display": "EN 12068 C HT {tmax}",
+     "label": {"zh": "C级第1组指标（阴极剥离≤10 mm），高温等级HT", "en": "Class C (option 1: CD ≤ 10 mm), temperature class HT", "ru": "Класс C (вариант 1: КО ≤ 10 мм), температурный класс HT"}},
+    {"id": "C2-50", "parts": [["t1", "C2"], ["t2", null]], "tc": "50", "tmax": 50, "display": "EN 12068 C 50",
+     "label": {"zh": "C级第2组指标（阴极剥离≤15 mm），温度等级50", "en": "Class C (option 2: CD ≤ 15 mm), temperature class 50", "ru": "Класс C (вариант 2: КО ≤ 15 мм), температурный класс 50"}},
+    {"id": "C2-HT", "parts": [["t1", "C2"], ["t2", null]], "tc": "HT", "tmax": 60, "display": "EN 12068 C HT {tmax}",
+     "label": {"zh": "C级第2组指标（阴极剥离≤15 mm），高温等级HT", "en": "Class C (option 2: CD ≤ 15 mm), temperature class HT", "ru": "Класс C (вариант 2: КО ≤ 15 мм), температурный класс HT"}},
+    {"id": "C3-30", "parts": [["t1", "C3"], ["t2", null]], "tc": "30", "tmax": 30, "display": "EN 12068 C 30",
+     "label": {"zh": "C级第3组指标（阴极剥离≤20 mm），温度等级30", "en": "Class C (option 3: CD ≤ 20 mm), temperature class 30", "ru": "Класс C (вариант 3: КО ≤ 20 мм), температурный класс 30"}},
+    {"id": "C3-50", "parts": [["t1", "C3"], ["t2", null]], "tc": "50", "tmax": 50, "display": "EN 12068 C 50",
+     "label": {"zh": "C级第3组指标（阴极剥离≤20 mm），温度等级50", "en": "Class C (option 3: CD ≤ 20 mm), temperature class 50", "ru": "Класс C (вариант 3: КО ≤ 20 мм), температурный класс 50"}},
+    {"id": "C3-HT", "parts": [["t1", "C3"], ["t2", null]], "tc": "HT", "tmax": 80, "display": "EN 12068 C HT {tmax}",
+     "label": {"zh": "C级第3组指标（阴极剥离≤20 mm），高温等级HT（如80℃热缩带）", "en": "Class C (option 3: CD ≤ 20 mm), temperature class HT", "ru": "Класс C (вариант 3: КО ≤ 20 мм), температурный класс HT"}}
+  ]
+}

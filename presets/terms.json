@@ -1,0 +1,1213 @@
+{
+ "_comment": "三语术语表。标准文件中任何文本字段写成 {键名} 即引用此处的译文；未收录的文字按原样输出。",
+ "g_primer": {
+  "zh": "底漆",
+  "en": "Primer",
+  "ru": "Грунтовка"
+ },
+ "g_compound": {
+  "zh": "粘弹体（非结晶低黏度聚烯烃）",
+  "en": "Non-crystalline low-viscosity polyolefin compound",
+  "ru": "Компаунд на основе некристаллического низковязкого полиолефина"
+ },
+ "g_complete": {
+  "zh": "完整涂层",
+  "en": "Complete coating",
+  "ru": "Покрытие в целом"
+ },
+ "g_outer_tape": {
+  "zh": "外护层——聚合物胶带（Type 13A）",
+  "en": "Type 13A (outer wrap — polymeric tape)",
+  "ru": "Тип 13A (наружная обёртка — полимерная лента)"
+ },
+ "g_outer_hs": {
+  "zh": "外护层——热收缩材料（Type 13B）",
+  "en": "Type 13B (outer wrap — heat-shrinkable material)",
+  "ru": "Тип 13B (наружная обёртка — термоусаживаемый материал)"
+ },
+ "g_backing": {
+  "zh": "基材",
+  "en": "Backing layer",
+  "ru": "Основа (подложка)"
+ },
+ "g_adhesive": {
+  "zh": "胶层",
+  "en": "Adhesive layer",
+  "ru": "Адгезионный слой"
+ },
+ "g_installed": {
+  "zh": "安装后的热收缩套",
+  "en": "Installed shrink sleeve",
+  "ru": "Установленная манжета"
+ },
+ "g_coating": {
+  "zh": "涂层性能",
+  "en": "Coating properties",
+  "ru": "Свойства покрытия"
+ },
+ "g_ageing": {
+  "zh": "老化性能",
+  "en": "Ageing properties",
+  "ru": "Стойкость к старению"
+ },
+ "g_optional": {
+  "zh": "附加性能",
+  "en": "Additional properties",
+  "ru": "Дополнительные свойства"
+ },
+ "g_gb_primer": {
+  "zh": "无溶剂环氧底漆性能",
+  "en": "Solvent-free epoxy primer",
+  "ru": "Свойства бессольвентной эпоксидной грунтовки"
+ },
+ "n_gb_primer": {
+  "zh": "（a 拉伸速度2mm/min）",
+  "en": "(a: tensile speed 2 mm/min)",
+  "ru": "(a: скорость растяжения 2 мм/мин)"
+ },
+ "g_gb_backing": {
+  "zh": "热收缩带基材性能ᵃ",
+  "en": "Heat-shrinkable backing ᵃ",
+  "ru": "Свойства основы термоусаживающейся ленты ᵃ"
+ },
+ "n_gb_backing": {
+  "zh": "（a 除热冲击外，基材性能需经过200℃±5℃、5min.自由收缩后进行测定，拉伸试验速度为50mm/min。b 耐化学介质腐蚀指标为试验后的拉伸强度和断裂伸长率的保持率）",
+  "en": "(a: except thermal shock, backing properties are measured after free shrinkage at 200 °C ± 5 °C for 5 min; tensile speed 50 mm/min. b: chemical resistance is expressed as retention of tensile strength and elongation at break after the test)",
+  "ru": "(a: кроме термоудара, свойства основы определяют после свободной усадки при 200 °C ± 5 °C в течение 5 мин; скорость растяжения 50 мм/мин. b: химическая стойкость — сохранение прочности при разрыве и относительного удлинения после испытания)"
+ },
+ "g_gb_adhesive": {
+  "zh": "胶层性能",
+  "en": "Adhesive layer",
+  "ru": "Свойства адгезионного слоя"
+ },
+ "n_gb_adhesive": {
+  "zh": "（b 拉伸速度10mm/min）",
+  "en": "(b: tensile speed 10 mm/min)",
+  "ru": "(b: скорость растяжения 10 мм/мин)"
+ },
+ "g_gb_system": {
+  "zh": "热收缩带安装系统",
+  "en": "Installed heat-shrinkable sleeve system",
+  "ru": "Система установленной термоусаживающейся ленты"
+ },
+ "thickness": {
+  "zh": "厚度",
+  "en": "Thickness",
+  "ru": "Толщина"
+ },
+ "thickness_layers": {
+  "zh": "厚度（套管层）",
+  "en": "Thickness – sleeve layers",
+  "ru": "Толщина – слои манжеты"
+ },
+ "min_thickness": {
+  "zh": "最小厚度",
+  "en": "Minimum thickness",
+  "ru": "Минимальная толщина"
+ },
+ "holiday_5kv": {
+  "zh": "漏点检测（5 kV/mm + 5 kV）",
+  "en": "Holiday detection at 5 kV/mm + 5 kV",
+  "ru": "Контроль сплошности при 5 кВ/мм + 5 кВ"
+ },
+ "holiday_5kv_25": {
+  "zh": "漏点检测（5 kV/mm + 5 kV，最高25 kV）",
+  "en": "Holiday detection at 5 kV/mm + 5 kV, max. 25 kV",
+  "ru": "Контроль сплошности при 5 кВ/мм + 5 кВ, не более 25 кВ"
+ },
+ "holiday": {
+  "zh": "漏点检测",
+  "en": "Holiday detection",
+  "ru": "Контроль сплошности"
+ },
+ "impact": {
+  "zh": "抗冲击性",
+  "en": "Impact resistance",
+  "ru": "Ударная прочность"
+ },
+ "impact_holiday": {
+  "zh": "抗冲击性（以5 kV/mm + 5 kV检漏）",
+  "en": "Impact resistance (holiday detection at 5 kV/mm + 5 kV)",
+  "ru": "Ударная прочность (контроль сплошности при 5 кВ/мм + 5 кВ)"
+ },
+ "indent_pressure": {
+  "zh": "抗压痕性——试验压力",
+  "en": "Indentation resistance – pressure",
+  "ru": "Стойкость к вдавливанию – давление"
+ },
+ "indent_residual": {
+  "zh": "抗压痕性——剩余厚度",
+  "en": "Indentation resistance – residual thickness",
+  "ru": "Стойкость к вдавливанию – остаточная толщина"
+ },
+ "indent_penetration": {
+  "zh": "抗压痕性——压入深度",
+  "en": "Indentation resistance – amount of penetration",
+  "ru": "Стойкость к вдавливанию – глубина вдавливания"
+ },
+ "cd_28d": {
+  "zh": "阴极剥离（28 d）",
+  "en": "Cathodic disbondment at 28 days",
+  "ru": "Катодное отслаивание, 28 сут"
+ },
+ "cd": {
+  "zh": "阴极剥离",
+  "en": "Cathodic disbondment",
+  "ru": "Катодное отслаивание"
+ },
+ "seir_rs100": {
+  "zh": "比电绝缘电阻 R_S100",
+  "en": "Specific electrical insulation resistance R_S100",
+  "ru": "Удельное электрическое сопротивление изоляции R_S100"
+ },
+ "seir_ratio": {
+  "zh": "比电绝缘电阻比 R_S100/R_S70",
+  "en": "Specific electrical insulation resistance R_S100/R_S70",
+  "ru": "Отношение удельного сопротивления изоляции R_S100/R_S70"
+ },
+ "peel_ii": {
+  "zh": "层间剥离强度（内层/内层）",
+  "en": "Peel strength between tape layers – inner/inner",
+  "ru": "Прочность при отслаивании между слоями – внутренний/внутренний"
+ },
+ "peel_oi": {
+  "zh": "层间剥离强度（外层/内层）",
+  "en": "Peel strength between tape layers – outer/inner",
+  "ru": "Прочность при отслаивании между слоями – наружный/внутренний"
+ },
+ "peel_ii_oi": {
+  "zh": "层间剥离强度（内层/内层、外层/内层）",
+  "en": "Peel strength between tape layers – inner/inner, outer/inner",
+  "ru": "Прочность при отслаивании между слоями – внутренний/внутренний, наружный/внутренний"
+ },
+ "peel_oo": {
+  "zh": "层间剥离强度（外层/外层）",
+  "en": "Peel strength between tape layers – outer/outer",
+  "ru": "Прочность при отслаивании между слоями – наружный/наружный"
+ },
+ "peel_steel": {
+  "zh": "剥离强度（对钢表面）",
+  "en": "Peel strength to steel surface",
+  "ru": "Прочность при отслаивании от стальной поверхности"
+ },
+ "peel_plant": {
+  "zh": "剥离强度（对工厂涂层）",
+  "en": "Peel strength to plant coating",
+  "ru": "Прочность при отслаивании от заводского покрытия"
+ },
+ "peel_plant_hw28": {
+  "zh": "剥离强度（对工厂涂层，50℃热水浸泡28 d后）",
+  "en": "Peel strength to plant coating after 28-day hot-water immersion test at 50 °C",
+  "ru": "Прочность при отслаивании от заводского покрытия после 28 сут выдержки в горячей воде при 50 °C"
+ },
+ "peel_steel_hw28": {
+  "zh": "剥离强度（对钢表面，50℃或80℃热水浸泡28 d后）",
+  "en": "Peel strength to steel surface after 28-day hot-water immersion test at 50 °C or 80 °C",
+  "ru": "Прочность при отслаивании от стали после 28 сут выдержки в горячей воде при 50 °C или 80 °C"
+ },
+ "peel_pipe_plant": {
+  "zh": "剥离强度（对管体及工厂涂层）",
+  "en": "Peel strength to pipe surface and plant applied coating",
+  "ru": "Прочность при отслаивании от поверхности трубы и заводского покрытия"
+ },
+ "peel_pipe_plant_10": {
+  "zh": "剥离强度（10 mm/min，对管体及聚烯烃工厂涂层）",
+  "en": "Peel strength at 10 mm/min to pipe surface and to polyolefin plant coating",
+  "ru": "Прочность при отслаивании при 10 мм/мин от поверхности трубы и полиолефинового заводского покрытия"
+ },
+ "peel_pipe_10": {
+  "zh": "剥离强度（10 mm/min，对管体）",
+  "en": "Peel strength at 10 mm/min to pipe surface",
+  "ru": "Прочность при отслаивании при 10 мм/мин от поверхности трубы"
+ },
+ "peel_po_10": {
+  "zh": "剥离强度（10 mm/min，对聚烯烃工厂涂层）",
+  "en": "Peel strength at 10 mm/min to polyolefin plant coating",
+  "ru": "Прочность при отслаивании при 10 мм/мин от полиолефинового заводского покрытия"
+ },
+ "peel_hw100": {
+  "zh": "Tmax热水浸泡100 d后剥离强度（对管体及工厂涂层，Tmax限值按附录I）",
+  "en": "Peel strength to pipe surface and plant applied coating after 100-day hot-water immersion test at Tmax limited as per Annex I",
+  "ru": "Прочность при отслаивании от трубы и заводского покрытия после 100 сут выдержки в горячей воде при Tmax (с ограничением по приложению I)"
+ },
+ "lap_shear": {
+  "zh": "搭接剪切强度",
+  "en": "Lap shear strength",
+  "ru": "Прочность при сдвиге внахлёст"
+ },
+ "lap_shear_10": {
+  "zh": "搭接剪切强度（10 mm/min）",
+  "en": "Lap shear strength at 10 mm/min",
+  "ru": "Прочность при сдвиге внахлёст при 10 мм/мин"
+ },
+ "lap_shear_res": {
+  "zh": "搭接剪切强度",
+  "en": "Lap shear resistance",
+  "ru": "Сопротивление сдвигу внахлёст"
+ },
+ "ta_elong": {
+  "zh": "耐热老化——断裂伸长率比",
+  "en": "Thermal ageing resistance – ratio of elongation at break",
+  "ru": "Стойкость к термостарению – отношение относительного удлинения при разрыве"
+ },
+ "ta_peel_layers": {
+  "zh": "耐热老化——层间剥离强度比",
+  "en": "Thermal ageing resistance – ratio of peel strength between tape layers",
+  "ru": "Стойкость к термостарению – отношение прочности при отслаивании между слоями"
+ },
+ "ta_peel_pipe": {
+  "zh": "耐热老化——对管体剥离强度比",
+  "en": "Thermal ageing resistance – ratio of peel strength to pipe surface",
+  "ru": "Стойкость к термостарению – отношение прочности при отслаивании от трубы"
+ },
+ "ta14_elong": {
+  "zh": "耐热老化（Tmax+20℃老化）——断裂伸长率",
+  "en": "Thermal ageing resistance (aged at Tmax + 20 °C) – elongation at break",
+  "ru": "Стойкость к термостарению (при Tmax + 20 °C) – относительное удлинение при разрыве"
+ },
+ "ta14_peel": {
+  "zh": "耐热老化（Tmax+20℃老化）——对管体剥离强度",
+  "en": "Thermal ageing resistance (aged at Tmax + 20 °C) – peel strength to pipe surface",
+  "ru": "Стойкость к термостарению (при Tmax + 20 °C) – прочность при отслаивании от трубы"
+ },
+ "bursting_ratio": {
+  "zh": "增强基材爆破强度比",
+  "en": "Bursting strength of reinforced backing (ratio)",
+  "ru": "Отношение прочности армированной основы на продавливание"
+ },
+ "bursting": {
+  "zh": "增强基材爆破强度",
+  "en": "Bursting strength of reinforced backing",
+  "ru": "Прочность армированной основы на продавливание"
+ },
+ "oit": {
+  "zh": "基材氧化诱导时间（220℃，切线法）",
+  "en": "Oxidation induction time on the backing at 220 °C (intercept in the tangent method)",
+  "ru": "Время индукции окисления основы при 220 °C (метод касательных)"
+ },
+ "thermal_stab130": {
+  "zh": "130℃热稳定性（50周，安装系统）",
+  "en": "Thermal stability at 130 °C for 50 weeks, installed system",
+  "ru": "Термостабильность при 130 °C в течение 50 недель, установленная система"
+ },
+ "solid_content": {
+  "zh": "固体含量",
+  "en": "Solid content",
+  "ru": "Содержание сухого остатка"
+ },
+ "density_bh": {
+  "zh": "密度（基料和固化剂）",
+  "en": "Density (base and hardener)",
+  "ru": "Плотность (основа и отвердитель)"
+ },
+ "mix_ratio": {
+  "zh": "混合比",
+  "en": "Mix ratio",
+  "ru": "Соотношение смешивания"
+ },
+ "storage_temp_max": {
+  "zh": "最高储存温度",
+  "en": "Storage temperature, max.",
+  "ru": "Температура хранения, макс."
+ },
+ "shelf_life": {
+  "zh": "储存温度下的储存期",
+  "en": "Shelf life at storage temperature",
+  "ru": "Срок хранения при температуре хранения"
+ },
+ "dft": {
+  "zh": "推荐干膜厚度",
+  "en": "Recommended dry film thickness",
+  "ru": "Рекомендуемая толщина сухой плёнки"
+ },
+ "pot_life": {
+  "zh": "23℃适用期",
+  "en": "Pot life at 23 °C",
+  "ru": "Жизнеспособность при 23 °C"
+ },
+ "flash_point": {
+  "zh": "闪点",
+  "en": "Flash point",
+  "ru": "Температура вспышки"
+ },
+ "c_base": {
+  "zh": "基料",
+  "en": "base",
+  "ru": "основа"
+ },
+ "c_hardener": {
+  "zh": "固化剂",
+  "en": "hardener",
+  "ru": "отвердитель"
+ },
+ "tg": {
+  "zh": "玻璃化转变温度",
+  "en": "Glass transition temperature",
+  "ru": "Температура стеклования"
+ },
+ "cryst": {
+  "zh": "结晶温度",
+  "en": "Crystallization temperature",
+  "ru": "Температура кристаллизации"
+ },
+ "drip": {
+  "zh": "抗滴落性",
+  "en": "Drip resistance",
+  "ru": "Стойкость к стеканию"
+ },
+ "adh_reinf": {
+  "zh": "增强型粘弹体对钢及工厂涂层的附着力（热老化及Tmax+20℃热水浸泡100 d前后）",
+  "en": "Adhesion test of reinforced compound with respect to steel and to plant coating before and after thermal ageing and before and after hot-water immersion, both for 100 days at Tmax + 20 °C",
+  "ru": "Адгезия армированного компаунда к стали и заводскому покрытию до и после термостарения и выдержки в горячей воде (100 сут при Tmax + 20 °C)"
+ },
+ "adh_unreinf": {
+  "zh": "非增强型粘弹体对钢及工厂涂层的附着力（热老化及Tmax+20℃热水浸泡100 d前后）",
+  "en": "Adhesion test of compound without reinforcement with respect to steel and to plant coating before and after thermal ageing and before and after hot-water immersion, both for 100 days at Tmax + 20 °C",
+  "ru": "Адгезия неармированного компаунда к стали и заводскому покрытию до и после термостарения и выдержки в горячей воде (100 сут при Tmax + 20 °C)"
+ },
+ "peel_ow_ow": {
+  "zh": "外护层层间剥离强度",
+  "en": "Peel strength of outer wrap layer to outer wrap layer",
+  "ru": "Прочность при отслаивании наружной обёртки от наружной обёртки"
+ },
+ "peel_plant_opt": {
+  "zh": "对工厂涂层剥离强度（如适用）",
+  "en": "Peel strength to plant coating (if applicable)",
+  "ru": "Прочность при отслаивании от заводского покрытия (если применимо)"
+ },
+ "r_ow_hw": {
+  "zh": "外护层层间剥离强度比 P′₁₀₀/P′₀（Tmax热水浸泡100 d后，最高95℃）",
+  "en": "Peel strength (P′₁₀₀/P′₀) outer layer to outer layer after hot water immersion for 100 days at Tmax, max. 95 °C",
+  "ru": "Прочность при отслаивании (P′₁₀₀/P′₀) наружного слоя после 100 сут в горячей воде при Tmax, не более 95 °C"
+ },
+ "r_plant_hw": {
+  "zh": "对工厂涂层剥离强度比 P₁₀₀/P₀（Tmax热水浸泡100 d后，最高95℃）",
+  "en": "Peel strength (P₁₀₀/P₀) to plant coating after hot water immersion for 100 days at Tmax, max. 95 °C",
+  "ru": "Прочность при отслаивании (P₁₀₀/P₀) от заводского покрытия после 100 сут в горячей воде при Tmax, не более 95 °C"
+ },
+ "r_modulus_ta": {
+  "zh": "弹性模量比 E₁₀₀/E₀（Tmax+20℃热老化100 d后）",
+  "en": "Elastic modulus (E₁₀₀/E₀) after thermal ageing for 100 days at Tmax + 20 °C",
+  "ru": "Модуль упругости (E₁₀₀/E₀) после термостарения 100 сут при Tmax + 20 °C"
+ },
+ "r_ow_ta": {
+  "zh": "外护层层间剥离强度比 P′₁₀₀/P′₀（Tmax+20℃热老化100 d后）",
+  "en": "Peel strength (P′₁₀₀/P′₀) outer layer to outer layer after thermal ageing for 100 days at Tmax + 20 °C",
+  "ru": "Прочность при отслаивании (P′₁₀₀/P′₀) наружного слоя после термостарения 100 сут при Tmax + 20 °C"
+ },
+ "r_plant_ta": {
+  "zh": "对工厂涂层剥离强度比 P₁₀₀/P₀（Tmax+20℃热老化100 d后）",
+  "en": "Peel strength (P₁₀₀/P₀) to plant coating after thermal ageing for 100 days at Tmax + 20 °C",
+  "ru": "Прочность при отслаивании (P₁₀₀/P₀) от заводского покрытия после термостарения 100 сут при Tmax + 20 °C"
+ },
+ "r_no_holiday": {
+  "zh": "无漏点",
+  "en": "No holiday",
+  "ru": "Отсутствие пробоя"
+ },
+ "r_spec_min": {
+  "zh": "≥规定最小值",
+  "en": "≥ specified minimum value",
+  "ru": "≥ заданного минимального значения"
+ },
+ "r_09_nominal": {
+  "zh": "≥0.9×标称值",
+  "en": "≥ 0.9 × nominal value",
+  "ru": "≥ 0,9 × номинального значения"
+ },
+ "r_agreement": {
+  "zh": "协商确定",
+  "en": "By agreement",
+  "ru": "По согласованию"
+ },
+ "r_film_adhesive": {
+  "zh": "剥离后基材上留有胶膜即合格",
+  "en": "Passed when the tape leaves a film of adhesive on the substrate",
+  "ru": "Выдержано, если лента оставляет плёнку адгезива на подложке"
+ },
+ "r_film_compound": {
+  "zh": "剥离后基材上留有粘弹体膜",
+  "en": "The coating shall leave a film of compound on the substrate",
+  "ru": "Покрытие должно оставлять плёнку компаунда на подложке"
+ },
+ "r_coh_cov95": {
+  "zh": "内聚破坏，覆盖率≥95%",
+  "en": "cohesive separation mode, coverage ≥ 95 %",
+  "ru": "когезионный характер отрыва, покрытие ≥ 95 %"
+ },
+ "r_tg": {
+  "zh": "至少低于最低施工温度20℃",
+  "en": "At least 20 °C below minimum application temperature",
+  "ru": "Не менее чем на 20 °C ниже минимальной температуры нанесения"
+ },
+ "r_no_cryst": {
+  "zh": "无结晶迹象",
+  "en": "No evidence of crystallization",
+  "ru": "Отсутствие признаков кристаллизации"
+ },
+ "r_no_drip": {
+  "zh": "无粘弹体滴落",
+  "en": "No dripping of compound",
+  "ru": "Отсутствие стекания компаунда"
+ },
+ "r_cd0": {
+  "zh": "0 mm，无漏点",
+  "en": "0 mm, no holiday",
+  "ru": "0 мм, отсутствие пробоя"
+ },
+ "r_no_cracks": {
+  "zh": "无裂纹",
+  "en": "No cracks",
+  "ru": "Отсутствие трещин"
+ },
+ "r_pass": {
+  "zh": "合格",
+  "en": "Pass",
+  "ru": "Выдержано"
+ },
+ "r_no_defect": {
+  "zh": "无缺陷",
+  "en": "No defect",
+  "ru": "Отсутствие дефектов"
+ },
+ "r_convention": {
+  "zh": "按供需双方约定",
+  "en": "By convention",
+  "ru": "По соглашению сторон"
+ },
+ "r_no_sep": {
+  "zh": "无分离、撕裂或裂纹",
+  "en": "No separation, tears or cracks",
+  "ru": "Отсутствие отслаивания, разрывов и трещин"
+ },
+ "r_gb_shock": {
+  "zh": "无裂纹、无流淌、无垂滴",
+  "en": "No cracks, no flow, no dripping",
+  "ru": "Без трещин, потёков и капель"
+ },
+ "r_gb_hw120": {
+  "zh": "无鼓泡、无剥离、膜下无水",
+  "en": "No blistering, no disbondment, no water under film",
+  "ru": "Без вздутий и отслаивания, отсутствие воды под плёнкой"
+ },
+ "r_coh": {
+  "zh": "内聚破坏",
+  "en": "cohesive failure",
+  "ru": "когезионный отрыв"
+ },
+ "u_month": {
+  "zh": "月",
+  "en": "month",
+  "ru": "мес."
+ },
+ "u_visual": {
+  "zh": "目视",
+  "en": "visual",
+  "ru": "визуально"
+ },
+ "u_min": {
+  "zh": "min",
+  "en": "min",
+  "ru": "мин"
+ },
+ "u_h": {
+  "zh": "h",
+  "en": "h",
+  "ru": "ч"
+ },
+ "en_impact": {
+  "zh": "抗冲击性",
+  "en": "Impact resistance",
+  "ru": "Ударная прочность"
+ },
+ "en_indent_pressure": {
+  "zh": "抗压痕性——试验压力",
+  "en": "Indentation resistance – pressure (test condition)",
+  "ru": "Стойкость к вдавливанию – давление (условие испытания)"
+ },
+ "en_indent_residual": {
+  "zh": "抗压痕性——剩余厚度",
+  "en": "Indentation resistance – residual thickness",
+  "ru": "Стойкость к вдавливанию – остаточная толщина"
+ },
+ "en_seir": {
+  "zh": "比电绝缘电阻 R_S100",
+  "en": "Specific electrical insulation resistance R_S100",
+  "ru": "Удельное электрическое сопротивление изоляции R_S100"
+ },
+ "en_seir_ratio": {
+  "zh": "比电绝缘电阻比 R_S100/R_S70",
+  "en": "Specific electrical insulation resistance R_S100/R_S70",
+  "ru": "Отношение удельного сопротивления изоляции R_S100/R_S70"
+ },
+ "en_cd": {
+  "zh": "阴极剥离",
+  "en": "Cathodic disbondment resistance",
+  "ru": "Стойкость к катодному отслаиванию"
+ },
+ "en_peel_ii_oi": {
+  "zh": "层间剥离强度（内层/内层、外层/内层）",
+  "en": "Peel strength layer to layer – inner to inner + outer to inner",
+  "ru": "Прочность при отслаивании слой от слоя – внутренний/внутренний и наружный/внутренний"
+ },
+ "en_peel_oo": {
+  "zh": "层间剥离强度（外层/外层）",
+  "en": "Peel strength layer to layer – outer to outer",
+  "ru": "Прочность при отслаивании слой от слоя – наружный/наружный"
+ },
+ "en_peel_pipe": {
+  "zh": "剥离强度（对管体）",
+  "en": "Peel strength to pipe surface",
+  "ru": "Прочность при отслаивании от поверхности трубы"
+ },
+ "en_peel_factory": {
+  "zh": "剥离强度（对工厂涂层）",
+  "en": "Peel strength to factory coating",
+  "ru": "Прочность при отслаивании от заводского покрытия"
+ },
+ "en_lap_shear": {
+  "zh": "搭接剪切强度",
+  "en": "Lap shear strength",
+  "ru": "Прочность при сдвиге внахлёст"
+ },
+ "en_ta_tape": {
+  "zh": "耐热老化——带材强度比",
+  "en": "Thermal ageing resistance – ratio of tape strength",
+  "ru": "Стойкость к термостарению – отношение прочности ленты"
+ },
+ "en_ta_burst": {
+  "zh": "耐热老化——爆破强度比",
+  "en": "Thermal ageing resistance – ratio of bursting strength",
+  "ru": "Стойкость к термостарению – отношение прочности на продавливание"
+ },
+ "en_ta_elong": {
+  "zh": "耐热老化——断裂伸长率比",
+  "en": "Thermal ageing resistance – ratio of elongation at break",
+  "ru": "Стойкость к термостарению – отношение относительного удлинения при разрыве"
+ },
+ "en_ta_peel_layer": {
+  "zh": "耐热老化——层间剥离强度比",
+  "en": "Thermal ageing resistance – ratio of peel strength layer to layer",
+  "ru": "Стойкость к термостарению – отношение прочности при отслаивании слой от слоя"
+ },
+ "en_ta_peel_pipe": {
+  "zh": "耐热老化——对管体剥离强度比",
+  "en": "Thermal ageing resistance – ratio of peel strength to pipe surface",
+  "ru": "Стойкость к термостарению – отношение прочности при отслаивании от трубы"
+ },
+ "en_microbio": {
+  "zh": "耐微生物性",
+  "en": "Microbiological resistance",
+  "ru": "Микробиологическая стойкость"
+ },
+ "en_uv_elong": {
+  "zh": "耐紫外辐照——断裂伸长率比",
+  "en": "Ultraviolet irradiation resistance – ratio of elongation at break",
+  "ru": "Стойкость к УФ-облучению – отношение относительного удлинения при разрыве"
+ },
+ "en_uv_tape": {
+  "zh": "耐紫外辐照——带材强度比",
+  "en": "Ultraviolet irradiation resistance – ratio of tape strength",
+  "ru": "Стойкость к УФ-облучению – отношение прочности ленты"
+ },
+ "en_uv_burst": {
+  "zh": "耐紫外辐照——爆破强度比",
+  "en": "Ultraviolet irradiation resistance – ratio of bursting strength",
+  "ru": "Стойкость к УФ-облучению – отношение прочности на продавливание"
+ },
+ "en_lowtemp_flex": {
+  "zh": "低温柔韧性",
+  "en": "Low temperature flexibility",
+  "ru": "Гибкость при низкой температуре"
+ },
+ "en_lowtemp_unroll": {
+  "zh": "低温展开试验",
+  "en": "Low temperature unrolling test",
+  "ru": "Испытание на разматывание при низкой температуре"
+ },
+ "en_drip_petro": {
+  "zh": "矿脂带抗滴落性",
+  "en": "Drip resistance of petrolatum tapes",
+  "ru": "Стойкость петролатумных лент к стеканию"
+ },
+ "din_saponification": {
+  "zh": "皂化值",
+  "en": "Saponification number",
+  "ru": "Число омыления"
+ },
+ "din_naoh_e": {
+  "zh": "耐氢氧化钠溶液——断裂伸长率指数 E_NaOH/E_H2O（未增强材料）",
+  "en": "Resistance to sodium hydroxide solution – E_NaOH/E_H2O (unreinforced material)",
+  "ru": "Стойкость к раствору NaOH – E_NaOH/E_H2O (неармированный материал)"
+ },
+ "din_naoh_s": {
+  "zh": "耐氢氧化钠溶液——带材强度指数 S_NaOH/S_H2O（未增强材料）",
+  "en": "Resistance to sodium hydroxide solution – S_NaOH/S_H2O (unreinforced material)",
+  "ru": "Стойкость к раствору NaOH – S_NaOH/S_H2O (неармированный материал)"
+ },
+ "din_naoh_b": {
+  "zh": "耐氢氧化钠溶液——爆破强度指数 B_NaOH/B_H2O（增强材料）",
+  "en": "Resistance to sodium hydroxide solution – B_NaOH/B_H2O (reinforced material)",
+  "ru": "Стойкость к раствору NaOH – B_NaOH/B_H2O (армированный материал)"
+ },
+ "din_naoh_100_70": {
+  "zh": "耐氢氧化钠溶液——100 d与70 d结果之比",
+  "en": "Resistance to sodium hydroxide solution – ratio of 100-day to 70-day values",
+  "ru": "Стойкость к раствору NaOH – отношение значений после 100 и 70 сут"
+ },
+ "din_patch_shear": {
+  "zh": "补伤片搭接剪切强度",
+  "en": "Lap shear strength of repair patches",
+  "ru": "Прочность при сдвиге ремонтных заплат"
+ },
+ "gost_tensile": {
+  "zh": "拉伸强度",
+  "en": "Tensile strength at break",
+  "ru": "Прочность при разрыве"
+ },
+ "gost_elong": {
+  "zh": "断裂伸长率",
+  "en": "Elongation at break",
+  "ru": "Относительное удлинение при разрыве"
+ },
+ "gost_elong_change": {
+  "zh": "100℃×1000 h后断裂伸长率变化",
+  "en": "Change of elongation at break after 1000 h at 100 °C",
+  "ru": "Изменение относительного удлинения при разрыве после выдержки при 100 °C в течение 1000 ч"
+ },
+ "gost_brittle": {
+  "zh": "脆化温度",
+  "en": "Brittleness temperature",
+  "ru": "Температура хрупкости"
+ },
+ "gost_escr": {
+  "zh": "耐环境应力开裂（50℃）",
+  "en": "Resistance to cracking at 50 °C",
+  "ru": "Стойкость к растрескиванию при 50 °C"
+ },
+ "gost_impact": {
+  "zh": "抗冲击强度",
+  "en": "Impact strength",
+  "ru": "Прочность при ударе"
+ },
+ "gost_adh_overlap": {
+  "zh": "搭接处附着力",
+  "en": "Adhesion in overlap",
+  "ru": "Адгезия в нахлёсте"
+ },
+ "gost_adh_tape_tape": {
+  "zh": "搭接处附着力（胶带对胶带）",
+  "en": "Adhesion in overlap – tape to tape",
+  "ru": "Адгезия в нахлёсте – ленты к ленте"
+ },
+ "gost_adh_wrap_tape": {
+  "zh": "搭接处附着力（外护带对胶带）",
+  "en": "Adhesion in overlap – wrap to tape",
+  "ru": "Адгезия в нахлёсте – обёртки к ленте"
+ },
+ "gost_adh_steel": {
+  "zh": "对钢附着力",
+  "en": "Adhesion to steel",
+  "ru": "Адгезия к стали"
+ },
+ "gost_adh_water": {
+  "zh": "水中浸泡1000 h后对钢附着力",
+  "en": "Adhesion to steel after 1000 h water immersion",
+  "ru": "Адгезия к стали после выдержки в воде в течение 1000 ч"
+ },
+ "gost_adh_air": {
+  "zh": "100℃空气中1000 h后对钢附着力",
+  "en": "Adhesion to steel after 1000 h in air at 100 °C",
+  "ru": "Адгезия к стали после выдержки на воздухе в течение 1000 ч при 100 °C"
+ },
+ "gost_fungus": {
+  "zh": "耐霉菌性",
+  "en": "Fungus resistance",
+  "ru": "Грибостойкость"
+ },
+ "gost_cd_area": {
+  "zh": "阴极极化剥离面积",
+  "en": "Disbondment area under cathodic polarization",
+  "ru": "Площадь отслаивания покрытия при катодной поляризации"
+ },
+ "gost_trans_res0": {
+  "zh": "3% NaCl溶液中过渡电阻（初始）",
+  "en": "Transition resistance in 3 % NaCl solution – initial",
+  "ru": "Переходное сопротивление покрытия в 3%-ном растворе NaCl – исходное"
+ },
+ "gost_trans_res100": {
+  "zh": "3% NaCl溶液中过渡电阻（浸泡100 d后）",
+  "en": "Transition resistance in 3 % NaCl solution – after 100 days",
+  "ru": "Переходное сопротивление покрытия в 3%-ном растворе NaCl – через 100 сут выдержки"
+ },
+ "gost_dielectric": {
+  "zh": "介电连续性（电火花检漏无击穿）",
+  "en": "Dielectric continuity (no breakdown at test voltage)",
+  "ru": "Диэлектрическая сплошность (отсутствие пробоя при напряжении)"
+ },
+ "gost_penetration": {
+  "zh": "抗压入（压痕深度）",
+  "en": "Penetration (indentation) resistance",
+  "ru": "Сопротивление пенетрации (вдавливанию)"
+ },
+ "gost_water_abs": {
+  "zh": "1000 h吸水率（20℃）",
+  "en": "Water absorption of tape or wrap after 1000 h at 20 °C",
+  "ru": "Водопоглощение ленты или обёртки в течение 1000 ч при 20 °C"
+ },
+ "c_to_20": {
+  "zh": "≤20℃",
+  "en": "≤ 20 °C",
+  "ru": "до 20 °C"
+ },
+ "c_over_20": {
+  "zh": ">20℃",
+  "en": "> 20 °C",
+  "ru": "свыше 20 °C"
+ },
+ "c_to_40": {
+  "zh": "≤40℃",
+  "en": "up to 40 °C",
+  "ru": "до 40 °C"
+ },
+ "c_m40_40": {
+  "zh": "-40℃~40℃",
+  "en": "-40 °C to 40 °C",
+  "ru": "от минус 40 °C до 40 °C"
+ },
+ "u_ball": {
+  "zh": "级",
+  "en": "grade",
+  "ru": "балл"
+ },
+ "ad_visual": {
+  "zh": "表面外观目视检查",
+  "en": "Visual inspection for surface irregularities",
+  "ru": "Визуальный контроль поверхности"
+ },
+ "ad_pulloff": {
+  "zh": "环氧对钢拉开法附着力（23℃）",
+  "en": "Pull off adhesion strength of epoxy to steel at 23 °C",
+  "ru": "Адгезия эпоксидного слоя к стали методом отрыва при 23 °C"
+ },
+ "ad_peel": {
+  "zh": "剥离强度（10 mm/min，对管体及3LPE涂层）",
+  "en": "Peel strength at 10 mm/min to pipe surface and to 3LPE coating",
+  "ru": "Прочность при отслаивании при 10 мм/мин от трубы и покрытия 3LPE"
+ },
+ "ad_peel_pp": {
+  "zh": "剥离强度（10 mm/min，对管体及3LPP涂层）",
+  "en": "Peel strength at 10 mm/min to pipe surface and to 3LPP coating",
+  "ru": "Прочность при отслаивании при 10 мм/мин от трубы и покрытия 3LPP"
+ },
+ "ad_peel_hw": {
+  "zh": "80℃热水浸泡100 d后剥离强度（对管体及3LPE涂层）",
+  "en": "Peel strength to pipe surface and to 3LPE coating after 100 days hot water immersion at 80 °C",
+  "ru": "Прочность при отслаивании от трубы и покрытия 3LPE после 100 сут в горячей воде при 80 °C"
+ },
+ "ad_peel_hw_pp": {
+  "zh": "95℃热水浸泡100 d后剥离强度（对管体及3LPP涂层）",
+  "en": "Peel strength to pipe surface and to 3LPP coating after 100 days hot water immersion at 95 °C",
+  "ru": "Прочность при отслаивании от трубы и покрытия 3LPP после 100 сут в горячей воде при 95 °C"
+ },
+ "ad_elong": {
+  "zh": "断裂伸长率",
+  "en": "Elongation at break",
+  "ru": "Относительное удлинение при разрыве"
+ },
+ "ad_ta": {
+  "zh": "热老化（100℃，100 d）",
+  "en": "Thermal ageing, 100 days at 100 °C",
+  "ru": "Термостарение, 100 сут при 100 °C"
+ },
+ "ad_ta_pp": {
+  "zh": "热老化（130℃，100 d）",
+  "en": "Thermal ageing, 100 days at 130 °C",
+  "ru": "Термостарение, 100 сут при 130 °C"
+ },
+ "ad_tensile": {
+  "zh": "拉伸强度",
+  "en": "Tensile strength",
+  "ru": "Прочность при растяжении"
+ },
+ "ad_water_abs": {
+  "zh": "吸水率",
+  "en": "Water absorption",
+  "ru": "Водопоглощение"
+ },
+ "ad_overlap": {
+  "zh": "与3LPE涂层搭接长度",
+  "en": "Overlapping on the 3LPE",
+  "ru": "Нахлёст на покрытие 3LPE"
+ },
+ "ad_overlap_pp": {
+  "zh": "与3LPP涂层搭接长度",
+  "en": "Overlapping on the 3LPP",
+  "ru": "Нахлёст на покрытие 3LPP"
+ },
+ "ad_hw_epoxy": {
+  "zh": "环氧热水浸泡（28 d）",
+  "en": "Hot water soak test for epoxy for 28 days",
+  "ru": "Испытание эпоксидного слоя выдержкой в горячей воде 28 сут"
+ },
+ "ad_epoxy_fbe": {
+  "zh": "液体环氧对工厂FBE附着力",
+  "en": "Adhesion of liquid epoxy to existing factory applied FBE",
+  "ru": "Адгезия жидкой эпоксидной грунтовки к заводскому FBE"
+ },
+ "ad_destructive": {
+  "zh": "破坏性检验",
+  "en": "Destructive testing",
+  "ru": "Разрушающий контроль"
+ },
+ "r_ad_epoxy_fbe": {
+  "zh": ">750 psi",
+  "en": "> 750 psi",
+  "ru": "> 750 psi"
+ },
+ "r_no_loss_adh": {
+  "zh": "无附着力丧失",
+  "en": "No loss of adhesion",
+  "ru": "Без потери адгезии"
+ },
+ "r_even_dist": {
+  "zh": "底漆和胶层分布均匀",
+  "en": "Even distribution of primer and adhesive",
+  "ru": "Равномерное распределение грунтовки и адгезива"
+ },
+ "r_free_blisters": {
+  "zh": "无气泡、针孔、划痕",
+  "en": "Free from blisters, pinholes, scratches",
+  "ru": "Без пузырей, проколов и царапин"
+ },
+ "r_qual_thk": {
+  "zh": "协商确定（按已鉴定体系厚度）或按规定",
+  "en": "By agreement (qualified thickness system) or specified",
+  "ru": "По согласованию (толщина квалифицированной системы) или по заданию"
+ },
+ "r_uv_pdo": {
+  "zh": "500 h样品断裂伸长率≥150%；1500/2500 h样品断裂伸长率≥100%",
+  "en": "500 h sample: elongation at break ≥ 150 %; 1500/2500 h sample: ≥ 100 %",
+  "ru": "Образец 500 ч: удлинение при разрыве ≥ 150 %; образец 1500/2500 ч: ≥ 100 %"
+ },
+ "pdo_visual": {
+  "zh": "外观",
+  "en": "Visual appearance",
+  "ru": "Внешний вид"
+ },
+ "pdo_adhesion": {
+  "zh": "附着力（剥离强度）",
+  "en": "Adhesion (peel strength)",
+  "ru": "Адгезия (прочность при отслаивании)"
+ },
+ "pdo_hw28": {
+  "zh": "热水浸泡28 d",
+  "en": "Hot water soak 28 days",
+  "ru": "Выдержка в горячей воде 28 сут"
+ },
+ "pdo_indent": {
+  "zh": "压痕（10 N/mm²）",
+  "en": "Indentation at 10 N/mm²",
+  "ru": "Вдавливание при 10 Н/мм²"
+ },
+ "pdo_ta": {
+  "zh": "热老化100 d",
+  "en": "Thermal ageing, 100 days",
+  "ru": "Термостарение, 100 сут"
+ },
+ "pdo_uv": {
+  "zh": "耐紫外试验",
+  "en": "UV resistance test",
+  "ru": "Испытание на УФ-стойкость"
+ },
+ "pdo_peel_oo": {
+  "zh": "外护带剥离（外层/外层）",
+  "en": "Peel of outer wrap – outer/outer",
+  "ru": "Отслаивание наружной обёртки – наружный/наружный"
+ },
+ "pdo_peel_io": {
+  "zh": "外护带剥离（内层/外层）",
+  "en": "Peel of outer wrap – inner/outer",
+  "ru": "Отслаивание наружной обёртки – внутренний/наружный"
+ },
+ "pdo_peel_off": {
+  "zh": "剥离附着力",
+  "en": "Peel off adhesion",
+  "ru": "Адгезия при отрыве"
+ },
+ "r_pdo_noholiday_06": {
+  "zh": "无漏点，剩余厚度>0.6 mm",
+  "en": "No holidays, remaining thickness > 0.6 mm",
+  "ru": "Отсутствие пробоя, остаточная толщина > 0,6 мм"
+ },
+ "r_pdo_hw_pe": {
+  "zh": ">5 N/mm（或按14.5.6注1）",
+  "en": "> 5 N/mm or follow Note 1 in section 14.5.6",
+  "ru": "> 5 Н/мм или согласно примечанию 1 п. 14.5.6"
+ },
+ "r_pdo_hw_pp": {
+  "zh": ">15.0 N/mm（或按14.5.6注1）",
+  "en": "> 15.0 N/mm or follow Note 1 in section 14.5.6",
+  "ru": "> 15,0 Н/мм или согласно примечанию 1 п. 14.5.6"
+ },
+ "r_pdo_ta_pe": {
+  "zh": ">3.5 N/mm（或按14.5.10注1）",
+  "en": "> 3.5 N/mm or follow Note 1 in section 14.5.10",
+  "ru": "> 3,5 Н/мм или согласно примечанию 1 п. 14.5.10"
+ },
+ "r_pdo_ta_pp": {
+  "zh": ">10.0 N/mm（或按14.5.10注1）",
+  "en": "> 10.0 N/mm or follow Note 1 in section 14.5.10",
+  "ru": "> 10,0 Н/мм или согласно примечанию 1 п. 14.5.10"
+ },
+ "r_pdo_cov_004": {
+  "zh": "基材覆盖率>95%，剩余厚度>0.6 mm，≥0.04 N/mm",
+  "en": "Substrate coverage > 95 %, remaining thickness > 0.6 mm, ≥ 0.04 N/mm",
+  "ru": "Покрытие подложки > 95 %, остаточная толщина > 0,6 мм, ≥ 0,04 Н/мм"
+ },
+ "r_pdo_cov_002": {
+  "zh": "基材覆盖率>95%，剩余厚度>0.6 mm，≥0.02 N/mm",
+  "en": "Substrate coverage > 95 %, remaining thickness > 0.6 mm, ≥ 0.02 N/mm",
+  "ru": "Покрытие подложки > 95 %, остаточная толщина > 0,6 мм, ≥ 0,02 Н/мм"
+ },
+ "r_pdo_cov_02": {
+  "zh": "基材覆盖率>95%，剩余厚度>0.6 mm，>0.2 N/mm（或按注1）",
+  "en": "Substrate coverage > 95 %, remaining thickness > 0.6 mm, > 0.2 N/mm or follow Note 1",
+  "ru": "Покрытие подложки > 95 %, остаточная толщина > 0,6 мм, > 0,2 Н/мм или согласно примечанию 1"
+ },
+ "r_pdo_ls_0004": {
+  "zh": "基材覆盖率>95%，剩余厚度>0.6 mm，>0.004 N/mm²",
+  "en": "Substrate coverage > 95 %, remaining thickness > 0.6 mm, > 0.004 N/mm²",
+  "ru": "Покрытие подложки > 95 %, остаточная толщина > 0,6 мм, > 0,004 Н/мм²"
+ },
+ "r_pdo_ls_0002": {
+  "zh": "基材覆盖率>95%，剩余厚度>0.6 mm，>0.002 N/mm²",
+  "en": "Substrate coverage > 95 %, remaining thickness > 0.6 mm, > 0.002 N/mm²",
+  "ru": "Покрытие подложки > 95 %, остаточная толщина > 0,6 мм, > 0,002 Н/мм²"
+ },
+ "ga_tensile": {
+  "zh": "拉伸强度（ATT）",
+  "en": "Tensile strength at ATT",
+  "ru": "Прочность при растяжении при ATT"
+ },
+ "ga_elong": {
+  "zh": "断裂伸长率（ATT）",
+  "en": "Elongation to break at ATT",
+  "ru": "Относительное удлинение при разрыве при ATT"
+ },
+ "ga_lap": {
+  "zh": "胶层搭接剪切强度",
+  "en": "Lap shear strength of adhesive",
+  "ru": "Прочность адгезива при сдвиге внахлёст"
+ },
+ "ga_melt": {
+  "zh": "熔点",
+  "en": "Melting point",
+  "ru": "Температура плавления"
+ },
+ "ga_thk_body": {
+  "zh": "安装后厚度（本体）",
+  "en": "Installed thickness, body",
+  "ru": "Толщина после установки, тело"
+ },
+ "ga_thk_weld": {
+  "zh": "安装后厚度（焊缝处）",
+  "en": "Installed thickness, weld seam",
+  "ru": "Толщина после установки, сварной шов"
+ },
+ "ga_impact": {
+  "zh": "抗冲击（ATT）",
+  "en": "Impact at ATT",
+  "ru": "Удар при ATT"
+ },
+ "ga_hardness": {
+  "zh": "硬度（ATT）",
+  "en": "Hardness at ATT",
+  "ru": "Твёрдость при ATT"
+ },
+ "ga_indent": {
+  "zh": "抗压痕（UTT，剩余厚度）",
+  "en": "Indentation resistance at UTT (residual)",
+  "ru": "Стойкость к вдавливанию при UTT (остаточная толщина)"
+ },
+ "ga_adhesion": {
+  "zh": "附着力（本体、焊缝及PP涂层搭接处）",
+  "en": "Adhesion over body, weld bead and PP coating overlap",
+  "ru": "Адгезия по телу, сварному шву и нахлёсту на покрытие PP"
+ },
+ "ga_dielectric": {
+  "zh": "介电击穿电压（ATT）",
+  "en": "Dielectric breakdown voltage at ATT",
+  "ru": "Напряжение пробоя при ATT"
+ },
+ "ga_hw": {
+  "zh": "热水浸泡（UTT或95℃）",
+  "en": "Hot water immersion resistance at UTT or 95 °C",
+  "ru": "Стойкость к горячей воде при UTT или 95 °C"
+ },
+ "r_ga_hw": {
+  "zh": "剥离附着力>20 N/cm（UTT）",
+  "en": "Peel adhesion > 20 N/cm at UTT",
+  "ru": "Адгезия при отслаивании > 20 Н/см при UTT"
+ },
+ "r_ga_holiday": {
+  "zh": "25 kV检漏通过",
+  "en": "Pass at 25 kV",
+  "ru": "Выдержано при 25 кВ"
+ },
+ "gb_nonvolatile": {
+  "zh": "不挥发物含量",
+  "en": "Non-volatile content",
+  "ru": "Содержание нелетучих веществ"
+ },
+ "gb_shear": {
+  "zh": "剪切强度",
+  "en": "Shear strength",
+  "ru": "Прочность при сдвиге"
+ },
+ "gb_cd": {
+  "zh": "阴极剥离",
+  "en": "Cathodic disbondment",
+  "ru": "Катодное отслаивание"
+ },
+ "gb_tensile": {
+  "zh": "拉伸强度",
+  "en": "Tensile strength",
+  "ru": "Прочность при растяжении"
+ },
+ "gb_strain": {
+  "zh": "断裂标称应变",
+  "en": "Nominal strain at break",
+  "ru": "Номинальная деформация при разрыве"
+ },
+ "gb_vicat": {
+  "zh": "维卡软化点（A50，9.8N）",
+  "en": "Vicat softening point (A50, 9.8 N)",
+  "ru": "Температура размягчения по Вика (A50, 9,8 Н)"
+ },
+ "gb_brittle": {
+  "zh": "脆化温度",
+  "en": "Brittleness temperature",
+  "ru": "Температура хрупкости"
+ },
+ "gb_dielectric": {
+  "zh": "电气强度",
+  "en": "Electric strength",
+  "ru": "Электрическая прочность"
+ },
+ "gb_volres": {
+  "zh": "体积电阻率",
+  "en": "Volume resistivity",
+  "ru": "Удельное объёмное сопротивление"
+ },
+ "gb_escr": {
+  "zh": "耐环境应力开裂（F50）",
+  "en": "Environmental stress cracking resistance (F50)",
+  "ru": "Стойкость к растрескиванию под напряжением (F50)"
+ },
+ "gb_chem": {
+  "zh": "耐化学介质腐蚀（浸泡7d）ᵇ",
+  "en": "Chemical resistance (7 d immersion) ᵇ",
+  "ru": "Химическая стойкость (выдержка 7 сут) ᵇ"
+ },
+ "gb_ta": {
+  "zh": "耐热老化（150℃,21d）",
+  "en": "Heat ageing resistance (150 °C, 21 d)",
+  "ru": "Стойкость к тепловому старению (150 °C, 21 сут)"
+ },
+ "gb_shock": {
+  "zh": "热冲击（225℃,4h）",
+  "en": "Thermal shock (225 °C, 4 h)",
+  "ru": "Термоудар (225 °C, 4 ч)"
+ },
+ "gb_softening": {
+  "zh": "胶软化点（环球法）",
+  "en": "Adhesive softening point (ring and ball)",
+  "ru": "Температура размягчения адгезива (КиШ)"
+ },
+ "gb_lap_ss": {
+  "zh": "搭接剪切强度（钢/钢）",
+  "en": "Lap shear strength (steel/steel)",
+  "ru": "Прочность при сдвиге внахлёст (сталь/сталь)"
+ },
+ "gb_lap_pe": {
+  "zh": "搭接剪切强度（PE/PE）",
+  "en": "Lap shear strength (PE/PE)",
+  "ru": "Прочность при сдвиге внахлёст (ПЭ/ПЭ)"
+ },
+ "gb_impact": {
+  "zh": "抗冲击强度",
+  "en": "Impact strength",
+  "ru": "Ударная прочность"
+ },
+ "gb_peel_pipe": {
+  "zh": "剥离强度（对管体）",
+  "en": "Peel strength (to pipe body)",
+  "ru": "Прочность при отслаивании (от трубы)"
+ },
+ "gb_peel_pe": {
+  "zh": "剥离强度（对搭接部位聚乙烯层）",
+  "en": "Peel strength (to PE layer at overlap)",
+  "ru": "Прочность при отслаивании (от слоя ПЭ в зоне нахлёста)"
+ },
+ "gb_cd_system": {
+  "zh": "阴极剥离（50℃，30d）",
+  "en": "Cathodic disbondment (50 °C, 30 d)",
+  "ru": "Катодное отслаивание (50 °C, 30 сут)"
+ },
+ "gb_hw30": {
+  "zh": "耐热水浸泡（50℃，30d）剥离强度保持率（对底漆钢、对管体涂层）",
+  "en": "Hot water immersion (50 °C, 30 d) – peel strength retention (to primed steel, to pipe coating)",
+  "ru": "Выдержка в горячей воде (50 °C, 30 сут) – сохранение прочности при отслаивании (к стали с грунтовкой, к покрытию трубы)"
+ },
+ "gb_hw120": {
+  "zh": "耐热水浸泡（50℃，120d）",
+  "en": "Hot water immersion (50 °C, 120 d)",
+  "ru": "Выдержка в горячей воде (50 °C, 120 сут)"
+ },
+ "gb_ta_peel": {
+  "zh": "耐热老化（70℃,100d）剥离强度保持率（P₁₀₀/P₇₀，对底漆钢、对管体涂层）",
+  "en": "Heat ageing (70 °C, 100 d) – peel strength retention (P₁₀₀/P₇₀, to primed steel, to pipe coating)",
+  "ru": "Тепловое старение (70 °C, 100 сут) – сохранение прочности при отслаивании (P₁₀₀/P₇₀, к стали с грунтовкой, к покрытию трубы)"
+ },
+ "r_gb_coh50": {
+  "zh": "≥50/（内聚破坏）",
+  "en": "≥50 / (cohesive failure)",
+  "ru": "≥50 / (когезионный отрыв)"
+ },
+ "r_gb_coh3": {
+  "zh": "≥3/（内聚破坏）",
+  "en": "≥3 / (cohesive failure)",
+  "ru": "≥3 / (когезионный отрыв)"
+ },
+ "c_gb_tensile": {
+  "zh": "拉伸强度",
+  "en": "tensile strength",
+  "ru": "прочность при растяжении"
+ },
+ "c_gb_strain": {
+  "zh": "断裂标称应变",
+  "en": "strain at break",
+  "ru": "деформация при разрыве"
+ },
+ "c_gb_65_48": {
+  "zh": "65℃，48h",
+  "en": "65 °C, 48 h",
+  "ru": "65 °C, 48 ч"
+ },
+ "c_gb_23_30d": {
+  "zh": "23℃，30d",
+  "en": "23 °C, 30 d",
+  "ru": "23 °C, 30 сут"
+ },
+ "m_gost411a": {
+  "zh": "ГОСТ 411（方法А）",
+  "en": "GOST 411 (method A)",
+  "ru": "ГОСТ 411 (метод А)"
+ },
+ "m_gost411b": {
+  "zh": "ГОСТ 411（方法В）",
+  "en": "GOST 411 (method B)",
+  "ru": "ГОСТ 411 (метод В)"
+ }
+}

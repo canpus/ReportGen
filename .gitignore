@@ -1,0 +1,15 @@
+# 参考资料（标准原文、客户样本报告）不入库
+ref/
+# 草稿与临时产物
+work/
+# Python
+.venv/
+__pycache__/
+*.pyc
+# 运行数据与打包产物
+data/
+build/
+dist/
+*.spec
+# Office 临时文件
+~$*

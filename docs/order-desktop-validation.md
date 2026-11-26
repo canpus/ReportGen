@@ -1,6 +1,6 @@
 # 订单规格书审校桌面版验证报告
 
-2026 年 11 月 26 日，基线为 `work@764503a`。本轮 **65 项 pytest 全部通过**。三次独立冷启动都完成了 18 页混合 PDF 的图形界面审校和导出。Linux 整个应用进程树的最高常驻内存为 **98,263,040 字节**。本地构建的 Windows x64 绿色 ZIP 为 **42,838,650 字节**。
+2026 年 11 月 26 日，基线为 `work@764503a`。本轮 **65 项 pytest 全部通过**。三次独立冷启动都完成了 18 页混合 PDF 的图形界面审校和导出。Linux 整个应用进程树的最高常驻内存为 **98,263,040 字节**。GitHub Windows 构建机验证通过的绿色 ZIP 为 **42,839,261 字节**。[下载 Windows x64 包](https://github.com/canpus/ReportGen/actions/runs/45774329144/artifacts/15096065049)
 
 ## 业务验收
 
@@ -45,8 +45,11 @@ Linux 使用 Debian 13、CPython 3.13.5、Tk 8.6.16 和 X11。产品解释器只
 
 | 项目 | 实测 |
 | --- | --- |
-| ZIP 大小 | 42,838,650 字节，限制 50,000,000 字节 |
-| 解压 | 1,514 个文件，合计 102,241,696 字节 |
+| GitHub Windows 构建 | 应用 ZIP 为 42,839,261 字节，共 1,514 个文件，解压后 102,249,445 字节。下载后的 ZIP 已重新校验 CRC 和 SHA-256 |
+| GitHub 包 SHA-256 | `48e8a7304939584f6e8ee04672beab79228e5bd801c59f1a4bf9bf0851e777cf` |
+| GitHub Windows Server 2022 验收 | 实际执行 BAT、启动原生 Tk 窗口、注册托盘图标、用 DPAPI 保存并读取凭据、导入合成 PDF 并导出清单和空白模板，均通过 |
+| Linux 交叉构建 | ZIP 为 42,838,650 字节，限制 50,000,000 字节 |
+| Linux 交叉构建的解压结果 | 1,514 个文件，合计 102,241,696 字节 |
 | 本地交付 ZIP 的 SHA-256 | `4c232e0a5856593d3fdda140480727351264ff7eb893613dab569606fbbfa92f` |
 | 运行时 | Windows x64 CPython 3.12.10、Tcl/Tk、PyMuPDF 1.26.6、XlsxWriter 3.2.9、Pillow 11.3.0、PyYAML 6.0.3。补齐并校验 PDF 绑定所需的应用本地 MSVC++ DLL |
 | 兼容层验证 | 在 Linux Wine 10 中直接运行包内 Windows 解释器。验证带中文及空格路径的 BAT、实际 Tk 窗口、原页显示、原生托盘、DPAPI 密钥往返、PDF 导入与 JSON/Excel 导出 |
@@ -64,6 +67,8 @@ ReportGen/
   private/                        首次运行时创建
   exports/                        首次按默认位置导出时创建
 ```
+
+GitHub Actions 下载会附加一层 ZIP，外层为 42,839,429 字节。解出其中的 `ReportGen-Desktop-win64.zip`，再解压并双击启动器。此构建产物的 GitHub 保留期至 2027 年 2 月 24 日。[Windows 验收日志](https://github.com/canpus/ReportGen/actions/runs/45774329144)
 
 ## 复现
 

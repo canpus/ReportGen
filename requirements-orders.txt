@@ -1,4 +1,4 @@
-PyMuPDF>=1.26.6,<=2.1
-openpyxl==3.1.5
-PyYAML>=6.0.2,<7
-Pillow>=10,<14
+PyMuPDF==1.26.6
+XlsxWriter==3.2.9
+PyYAML==6.0.3
+Pillow==11.3.0

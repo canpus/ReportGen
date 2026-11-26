@@ -4,14 +4,10 @@ from io import BytesIO
 from pathlib import Path
 from zipfile import ZipFile, ZIP_DEFLATED
 import json
+import filecmp
 import os
 import tempfile
 import shutil
-
-from openpyxl import Workbook
-from openpyxl.styles import Alignment, Font, PatternFill, Protection
-from openpyxl.utils import get_column_letter
-from openpyxl.worksheet.hyperlink import Hyperlink
 
 COMMON = [
     ("id", "ID"),
@@ -58,7 +54,13 @@ def stringify(v):
     return v
 
 
-def worksheet(wb, name, headers, rows, *, editable=()):
+def worksheet(wb, name, headers, rows, *, editable=(), links=None):
+    if hasattr(wb, "add_worksheet"):
+        return _stream_sheet(wb, name, headers, rows, editable, links or {})
+    # Retain the existing helper for callers editing their own openpyxl workbook.
+    from openpyxl.styles import Alignment, Font, PatternFill, Protection
+    from openpyxl.utils import get_column_letter
+
     ws = wb.create_sheet(name)
     headers = list(headers)
     ws.append(headers)
@@ -118,22 +120,120 @@ def worksheet(wb, name, headers, rows, *, editable=()):
     return ws
 
 
+def _stream_sheet(book, name, titles, rows, editable, links):
+    ws = book.add_worksheet(name)
+    header = book.add_format(
+        {
+            "bold": True,
+            "font_color": "white",
+            "bg_color": "#1C4952",
+            "text_wrap": True,
+            "valign": "vcenter",
+        }
+    )
+    body = book.add_format({"text_wrap": True, "valign": "top"})
+    blank = book.add_format({"locked": False, "bg_color": "#FFF1B8", "valign": "top"})
+    titles = list(titles)
+    base = len(titles)
+    extra = {}
+    # Some evidence exceeds Excel's cell limit. Discover continuation columns before emitting row 1.
+    with tempfile.SpooledTemporaryFile(
+        max_size=64 * 1024, mode="w+t", encoding="utf-8", dir=book.tmpdir
+    ) as spool:
+        for row in rows:
+            values = [stringify(v) for v in row]
+            cells = []
+            for col, v in enumerate(values):
+                chunks = (
+                    [v[i : i + 16000] for i in range(0, len(v), 16000)]
+                    if isinstance(v, str) and len(v.encode("utf-16-le")) > 65534
+                    else [v]
+                )
+                for part, value in enumerate(chunks):
+                    j = col
+                    if part:
+                        key = (col, part)
+                        if key not in extra:
+                            extra[key] = len(titles)
+                            titles.append(f"{titles[col]} (continued {part + 1})")
+                        j = extra[key]
+                    cells.append((j, value))
+            spool.write(json.dumps(cells, ensure_ascii=False) + "\n")
+        ws.write_row(0, 0, titles, header)
+        ws.set_row(0, 34)
+        for i, title in enumerate(titles):
+            width = (
+                52
+                if title in {"Customer wording", "Evidence text", "Question", "Details"}
+                else 32
+                if title
+                in {
+                    "Test method",
+                    "Inspection activity",
+                    "Specified requirement",
+                    "Test condition",
+                }
+                else max(13, min(27, len(title) + 5))
+            )
+            ws.set_column(i, i, width)
+        spool.seek(0)
+        total = 0
+        for total, row in enumerate(spool, 1):
+            for col, val in json.loads(row):
+                style = blank if col < base and titles[col] in editable else body
+                if (total, col) in links:
+                    ws.write_url(
+                        total, col, "internal:" + links[total, col], body, str(val)
+                    )
+                elif isinstance(val, str):
+                    ws.write_string(total, col, val, style)
+                elif val is None:
+                    ws.write_blank(total, col, None, style)
+                else:
+                    ws.write(total, col, val, style)
+    ws.freeze_panes(
+        1, 3 if name not in {"Laboratory", "Field inspection", "Clarifications"} else 1
+    )
+    ws.autofilter(0, 0, total, len(titles) - 1)
+    ws.hide_gridlines(2)
+    ws.protect("", {"autofilter": True})
+    return ws
+
+
 def _values(r, columns):
     data = dict(r, id_note=[n["text"] for n in r["notes"]])
     return [data.get(k, "") for k, _ in columns]
 
 
-def _bytes(book):
-    stream = BytesIO()
-    book.save(stream)
-    return stream.getvalue()
+OUTPUTS = ("confirmed.json", "confirmed.xlsx", "laboratory.xlsx")
+
+
+def _write_outputs(snapshot, folder):
+    from xlsxwriter import Workbook
+
+    with (folder / "confirmed.json").open("w", encoding="utf-8", newline="") as out:
+        json.dump(snapshot, out, ensure_ascii=False, indent=2)
+    options = {
+        "constant_memory": True,
+        "tmpdir": str(folder),
+        "strings_to_urls": False,
+        "strings_to_formulas": False,
+    }
+    full = Workbook(folder / "confirmed.xlsx", options)
+    lab = Workbook(folder / "laboratory.xlsx", options)
+    _write_workbooks(snapshot, full, lab)
+    full.close()
+    lab.close()
 
 
 def files_for(snapshot):
-    full = Workbook()
-    full.remove(full.active)
-    lab = Workbook()
-    lab.remove(lab.active)
+    with tempfile.TemporaryDirectory() as directory:
+        folder = Path(directory)
+        _write_outputs(snapshot, folder)
+        return {name: (folder / name).read_bytes() for name in OUTPUTS}
+
+
+def _write_workbooks(snapshot, full, lab):
     tq = snapshot["clarifications"]
     freq = snapshot["frequencies"]
     req = snapshot["requirements"]
@@ -179,14 +279,17 @@ def files_for(snapshot):
             for d in snapshot["documents"]
         ),
     )
-    evidence = []
     anchors = {}
+    pos = 2
     for r in rows:
-        anchors[(r["doc"], r["id"])] = 2 + len(evidence)
-        for f in r["regions"]:
-            roles = [k for k, ids in r["bindings"].items() if f["id"] in ids]
-            evidence.append(
-                [
+        anchors[(r["doc"], r["id"])] = pos
+        pos += max(1, len(r["regions"]))
+
+    def evidence_rows():
+        for r in rows:
+            for f in r["regions"]:
+                roles = [k for k, ids in r["bindings"].items() if f["id"] in ids]
+                yield [
                     r["id"],
                     r["doc_no"],
                     f["page"],
@@ -199,10 +302,8 @@ def files_for(snapshot):
                     f["origin"],
                     f.get("runs", []),
                 ]
-            )
-        if not r["regions"]:
-            evidence.append(
-                [
+            if not r["regions"]:
+                yield [
                     r["id"],
                     r["doc_no"],
                     r["source_pages"],
@@ -214,7 +315,7 @@ def files_for(snapshot):
                     None,
                     None,
                 ]
-            )
+
     worksheet(
         full,
         "Evidence",
@@ -231,7 +332,7 @@ def files_for(snapshot):
             "Carrier",
             "Original text runs",
         ],
-        evidence,
+        evidence_rows(),
     )
     extras = [("question", "Question"), ("respondent", "Responsible party")]
     for name, batch, cols in [
@@ -239,16 +340,18 @@ def files_for(snapshot):
         ("Frequencies", freq, COMMON + PHASES),
         ("Clarifications", tq, COMMON + PHASES + extras),
     ]:
-        ws = worksheet(
-            full, name, [v for _, v in cols], (_values(r, cols) for r in batch)
+        idx = next(i for i, (key, _) in enumerate(cols) if key == "source_pages")
+        links = {
+            (i, idx): f"'Evidence'!A{anchors[(r['doc'], r['id'])]}"
+            for i, r in enumerate(batch, 1)
+        }
+        worksheet(
+            full,
+            name,
+            [v for _, v in cols],
+            (_values(r, cols) for r in batch),
+            links=links,
         )
-        idx = next(i for i, (k, _) in enumerate(cols, 1) if k == "source_pages")
-        for i, r in enumerate(batch, 2):
-            cell = ws.cell(i, idx)
-            cell.hyperlink = Hyperlink(
-                ref=cell.coordinate,
-                location=f"'Evidence'!A{anchors[(r['doc'], r['id'])]}",
-            )
     if snapshot.get("reviewed_pages"):
         worksheet(
             full,
@@ -318,40 +421,61 @@ def files_for(snapshot):
         ("Field inspection", [r for r in ordered if r["destination"] == "field"]),
         ("Clarifications", tq),
     ]:
-        cols = COMMON + PHASES + (extras if name == "Clarifications" else [])
+        cols = [
+            ("item", "Inspection activity"),
+            ("component", "Component / scenario"),
+            ("condition", "Test condition"),
+            ("method", "Test method"),
+            ("requirement", "Specified requirement"),
+            ("typical", "Typical value"),
+            ("unit", "Unit"),
+            ("frequency", "Sampling / frequency"),
+            ("failure_action", "Failure disposition"),
+            ("verbatim", "Customer wording"),
+            ("source_pages", "PDF pages"),
+        ]
+        if name == "Clarifications":
+            cols += extras
         headers = [v for _, v in cols] + ["Disposition"] + MANUAL
 
         def form_rows():
             for r in batch:
-                disposition = (
-                    "HOLD — clarification"
-                    if name == "Clarifications"
-                    or r["value_role"]
-                    in {"tba", "by_vendor", "by_agreement", "dash_not_listed"}
-                    else (
-                        "Reference only"
-                        if r["value_role"]
-                        in {"typical_only", "test_condition", "conditional_exception"}
-                        else "Review specified requirement"
-                    )
+                if name == "Clarifications" or r["value_role"] in {
+                    "tba",
+                    "by_vendor",
+                    "by_agreement",
+                    "dash_not_listed",
+                }:
+                    disposition = "HOLD — clarification"
+                elif r["value_role"] in {
+                    "typical_only",
+                    "test_condition",
+                    "conditional_exception",
+                }:
+                    disposition = "Reference only"
+                else:
+                    disposition = "Review specified requirement"
+
+                def joined(values):
+                    return "\n".join(dict.fromkeys(v for v in values if v))
+
+                phases = [label + "  " + r[k] for k, label in PHASES[:3] if r.get(k)]
+                notes = [n["text"] for n in r.get("notes", [])]
+                view = dict(
+                    r,
+                    component=joined(
+                        (r["component"], r["scenario"], r["interface"], r["stage"])
+                    ),
+                    condition=joined(
+                        (r["condition"], r["test_temp"], r["conditioning"], *notes)
+                    ),
+                    frequency=joined((r["sampling_basis"], r["frequency"], *phases)),
+                    source_pages=f"{r['doc_no']} ({r['doc_rev']}) · p. "
+                    + ", ".join(map(str, r["source_pages"])),
                 )
-                yield _values(r, cols) + [disposition, None, None, None]
+                yield _values(view, cols) + [disposition, None, None, None]
 
-        ws = worksheet(lab, name, headers, form_rows(), editable=MANUAL)
-        page_column = headers.index("PDF pages") + 1
-        for i, r in enumerate(batch, 2):
-            cell = ws.cell(i, page_column)
-            cell.hyperlink = Hyperlink(
-                ref=cell.coordinate,
-                target="confirmed.xlsx",
-                location=f"'Evidence'!A{anchors[(r['doc'], r['id'])]}",
-            )
-
-    return {
-        "confirmed.json": json.dumps(snapshot, ensure_ascii=False, indent=2).encode(),
-        "confirmed.xlsx": _bytes(full),
-        "laboratory.xlsx": _bytes(lab),
-    }
+        worksheet(lab, name, headers, form_rows(), editable=MANUAL)
 
 
 def export_directory(store, order, directory):
@@ -362,19 +486,19 @@ def export_directory(store, order, directory):
 
     tag = hashlib.sha256(order.encode()).hexdigest()[:16]
     dest = parent / f"order-{tag}-rev-{snap['confirmed_rev']}"
-    results = files_for(snap)
     temp = Path(tempfile.mkdtemp(prefix=".order-export-", dir=parent))
     try:
-        for name, data in results.items():
-            (temp / name).write_bytes(data)
+        _write_outputs(snap, temp)
         try:
             os.rename(temp, dest)
         except OSError:
             if (
                 not dest.is_dir()
                 or not (dest / "confirmed.json").is_file()
-                or (dest / "confirmed.json").read_bytes() != results["confirmed.json"]
-                or not all((dest / n).is_file() for n in results)
+                or not filecmp.cmp(
+                    dest / "confirmed.json", temp / "confirmed.json", shallow=False
+                )
+                or not all((dest / n).is_file() for n in OUTPUTS)
             ):
                 raise
         return dest

@@ -1,0 +1,4 @@
+ReportGen UI Regular and Bold are local interface subsets of Noto Sans CJK SC.
+Source: https://github.com/notofonts/noto-cjk/tree/main/Sans
+The fonts are distributed under SIL Open Font License 1.1 (OFL.txt).
+The subset includes interface labels, Latin characters and engineering symbols.

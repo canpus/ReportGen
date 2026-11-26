@@ -40,6 +40,7 @@ const statuses = {
   candidate: "待核对",
   confirmed: "已确认",
   clarify: "待澄清",
+  excluded: "已排除",
 };
 let current = null,
   records = [],
@@ -455,6 +456,7 @@ $("zoom").onclick = () => {
 };
 $("auditPanel").ontoggle = run(() => $("auditPanel").open && showAudit());
 $("confirm").onclick = run(() => decide("confirm"));
+$("exclude").onclick = run(() => decide("exclude"));
 $("edit").onclick = run(() => decide("edit"));
 $("tq").onclick = () => {
   if ($("reviewer").reportValidity()) $("tqDialog").showModal();

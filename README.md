@@ -10,7 +10,7 @@ Windows 发布包可从 [GitHub Releases](https://github.com/canpus/ReportGen/re
 
 ## 订单规格书审校
 
-源码版可导入英文 PDF、对照原页确认订单要求，并导出确认清单和实验室空白模板。安装订单依赖后运行 `python tools/order_review.py serve --open`。[启动与使用说明](docs/order-review.md) · [验证报告](docs/order-review-validation.md)
+Windows 便携包解压后双击 **Start-ReportGen.bat**。源码版安装 `requirements-orders.txt` 后运行 `python tools/order_desktop.py`。桌面审校台可对照 PDF 原页确认、修订、排除或登记澄清，导出确认清单和可单独发送的实验室空白模板。[使用与构建说明](docs/order-review.md) · [桌面版验证报告](docs/order-desktop-validation.md)
 
 ## 目录
 

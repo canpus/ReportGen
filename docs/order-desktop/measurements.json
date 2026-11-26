@@ -1,0 +1,140 @@
+{
+  "a": {
+    "address_space_limit": 8000000000,
+    "tray_docked": true,
+    "window_icon": true,
+    "pages": 18,
+    "rows": 115,
+    "api_pings": 1,
+    "images_sent": 1,
+    "confirmed": 112,
+    "excluded": 2,
+    "clarifications": 1,
+    "phases": {
+      "startup": {
+        "peak": 36888576,
+        "last": 36888576
+      },
+      "api": {
+        "peak": 39555072,
+        "last": 39489536
+      },
+      "import": {
+        "peak": 97439744,
+        "last": 92430336
+      },
+      "page": {
+        "peak": 95776768,
+        "last": 95776768
+      },
+      "review": {
+        "peak": 95895552,
+        "last": 95895552
+      },
+      "export": {
+        "peak": 98127872,
+        "last": 95129600
+      },
+      "idle": {
+        "peak": 98013184,
+        "last": 98013184
+      }
+    },
+    "tree_peak": 98127872,
+    "kernel_peak": 98127872,
+    "max_processes": 1,
+    "samples": 1126
+  },
+  "b": {
+    "address_space_limit": 8000000000,
+    "tray_docked": true,
+    "window_icon": true,
+    "pages": 18,
+    "rows": 115,
+    "api_pings": 1,
+    "images_sent": 1,
+    "confirmed": 112,
+    "excluded": 2,
+    "clarifications": 1,
+    "phases": {
+      "startup": {
+        "peak": 36061184,
+        "last": 36061184
+      },
+      "api": {
+        "peak": 38805504,
+        "last": 38588416
+      },
+      "import": {
+        "peak": 97136640,
+        "last": 92090368
+      },
+      "page": {
+        "peak": 95404032,
+        "last": 95404032
+      },
+      "review": {
+        "peak": 95522816,
+        "last": 95522816
+      },
+      "export": {
+        "peak": 98263040,
+        "last": 98263040
+      },
+      "idle": {
+        "peak": 97542144,
+        "last": 97542144
+      }
+    },
+    "tree_peak": 98263040,
+    "kernel_peak": 98263040,
+    "max_processes": 1,
+    "samples": 1118
+  },
+  "c": {
+    "address_space_limit": 8000000000,
+    "tray_docked": true,
+    "window_icon": true,
+    "pages": 18,
+    "rows": 115,
+    "api_pings": 1,
+    "images_sent": 1,
+    "confirmed": 112,
+    "excluded": 2,
+    "clarifications": 1,
+    "phases": {
+      "startup": {
+        "peak": 36057088,
+        "last": 36057088
+      },
+      "api": {
+        "peak": 38825984,
+        "last": 38649856
+      },
+      "import": {
+        "peak": 96051200,
+        "last": 92086272
+      },
+      "page": {
+        "peak": 95432704,
+        "last": 95432704
+      },
+      "review": {
+        "peak": 95551488,
+        "last": 95551488
+      },
+      "export": {
+        "peak": 97918976,
+        "last": 97890304
+      },
+      "idle": {
+        "peak": 97566720,
+        "last": 97566720
+      }
+    },
+    "tree_peak": 97918976,
+    "kernel_peak": 97918976,
+    "max_processes": 1,
+    "samples": 1119
+  }
+}

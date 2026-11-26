@@ -456,6 +456,7 @@ def extract_pages(pages, suggestions=None):
         and not (NORM.search(f.text) or CAPTION.match(f.text) or SECTION.match(f.text))
     )
     all_frag = {f.id: f for p in pages for f in p.fragments}
+    page_contexts = {}
     scenario_clause = ""
     layout = None
     caption = []
@@ -756,8 +757,18 @@ def extract_pages(pages, suggestions=None):
                         metadata["coating_type"] = re.sub(r"\s", "", m[1]).upper()
                     context.update(metadata)
                 para.extend(row)
+            if suggestions and page.number in suggestions:
+                page_contexts.setdefault(page.number, []).append(
+                    (y, dict(context), list(caption or []))
+                )
             last_page = page.number
             prev_y = max(f.box[3] for f in row)
+        if (
+            suggestions
+            and page.number in suggestions
+            and not page_contexts.get(page.number)
+        ):
+            page_contexts[page.number] = [(0, dict(context), list(caption or []))]
         if page.issue:
             flush_row()
             flush_para()
@@ -771,9 +782,19 @@ def extract_pages(pages, suggestions=None):
             rows.append(r)
     flush_row()
     flush_para()
+    if suggestions:
+        _vision_rows(
+            rows,
+            suggestions,
+            all_frag,
+            {p.number: p for p in pages},
+            page_contexts,
+            anchors,
+            footnotes,
+        )
     attached_notes = set()
     for r in rows:
-        if r.channel != "performance":
+        if r.channel not in {"performance", "vision", "frequency"}:
             continue
         for key, ids in list(r.bindings.items()):
             if key == "caption":
@@ -912,39 +933,288 @@ def extract_pages(pages, suggestions=None):
                     "RED",
                     "Verify reference " + typ + " " + num + " and its scope.",
                 )
-    if suggestions:
-        _vision_rows(rows, suggestions, all_frag)
     return rows
 
 
-def _vision_rows(rows, suggestions, fragments):
-    used = {tuple(sorted(r.evidence)) for r in rows}
-    for page, drafts in suggestions.items():
-        for draft in drafts:
+def _vision_rows(rows, suggestions, fragments, pages, locations, anchors, footnotes):
+    from .model import Fragment
+    from math import isfinite
+
+    previous_number = None
+    visual_context = {}
+    visual_caption = []
+    for number, drafts in sorted(suggestions.items()):
+        page = pages[number]
+        lines = locations.get(number, [])
+        if previous_number != number - 1 or page.carrier == "native":
+            visual_context = {}
+            visual_caption = []
+        previous_number = number
+        accepted = 0
+        for index, draft in enumerate(drafts):
+            if not isinstance(draft, dict):
+                continue
+            box = draft.get("box")
+            precise = (
+                isinstance(box, (tuple, list))
+                and len(box) == 4
+                and all(
+                    isinstance(v, (float, int)) and isfinite(v) and 0 <= v <= 1
+                    for v in box
+                )
+                and box[0] < box[2]
+                and box[1] < box[3]
+            )
+            box = list(box) if precise else [0, 0, 1, 1]
+            field_keys = (
+                "item",
+                "condition",
+                "requirement",
+                "typical",
+                "unit",
+                "method",
+                "pqt",
+                "ppt",
+                "production",
+                "sampling_basis",
+                "failure_action",
+            )
+            ids = [
+                fid
+                for key in field_keys
+                if isinstance(draft.get(key), list)
+                for fid in draft[key]
+                if isinstance(fid, str)
+                and fid in fragments
+                and fragments[fid].page == number
+            ]
+            y = fragments[ids[0]].box[1] if ids else box[1]
+            context, caption = next(
+                ((c, cap) for top, c, cap in reversed(lines) if top <= y + 0.025),
+                (lines[0][1], lines[0][2]) if lines else ({}, []),
+            )
+            context = dict(context, **visual_context)
+            context.setdefault("scenario", "")
+            quote = draft.get("quote", "")
+            if not isinstance(quote, str):
+                continue
+
+            def add(text, label, markers=()):
+                f = Fragment(
+                    f"{number}.V{index + 1}_{label}",
+                    number,
+                    box,
+                    text,
+                    text,
+                    list(markers),
+                    index + 1,
+                    "vision_region" if precise else "vision_page",
+                )
+                fragments[f.id] = f
+                page.fragments.append(f)
+                return f
+
+            kind = draft.get("kind")
+            if kind == "heading" and quote.strip():
+                f = add(quote, "heading")
+                old = dict(context)
+                contexts(quote, context)
+                if old.get("scenario") != context["scenario"]:
+                    context.update(table="", clause="")
+                    visual_caption = []
+                if m := CAPTION.match(quote):
+                    context["table"] = m[0]
+                    visual_caption = [f]
+                    target = anchors[("table", m[2].lower())]
+                    existing = next(
+                        (
+                            fs
+                            for sc, fs in target
+                            if sc == context["scenario"]
+                            and fs[0].page == number
+                            and normalized(read_text(fs)) == normalized(quote)
+                        ),
+                        None,
+                    )
+                    if existing:
+                        visual_caption = existing
+                    else:
+                        target.append((context["scenario"], [f]))
+                elif m := SECTION.match(quote):
+                    context["clause"] = m[1].rstrip(".")
+                    context["table"] = ""
+                    visual_caption = []
+                    target = anchors[("clause", context["clause"].lower())]
+                    if not any(
+                        sc == context["scenario"] and fs[0].page == number
+                        for sc, fs in target
+                    ):
+                        target.append((context["scenario"], [f]))
+                visual_context.update(
+                    {k: v for k, v in context.items() if old.get(k) != v}
+                )
+                continue
+            if kind == "footnote" and quote.strip():
+                label = note_label(quote)
+                if label:
+                    f = add(quote, "note")
+                    note = _paragraph(rows, [f], context, "footnote")
+                    if note:
+                        footnotes.append((label, note, [f]))
+                        note.flag(
+                            "visual_transcription",
+                            "CHECK",
+                            "Verify the printed footnote on the image.",
+                        )
+                        accepted += 1
+                continue
             fields = {}
-            for k in ("item", "condition", "requirement", "unit", "typical", "method"):
-                ids = draft.get(k, []) if isinstance(draft, dict) else []
-                if not isinstance(ids, list) or any(
-                    not isinstance(i, str)
-                    or i not in fragments
-                    or fragments[i].page != page
-                    for i in ids
+            unverified = False
+            for key in field_keys:
+                value = draft.get(key)
+                if (
+                    isinstance(value, list)
+                    and value
+                    and all(
+                        isinstance(i, str)
+                        and i in fragments
+                        and fragments[i].page == number
+                        for i in value
+                    )
                 ):
-                    fields = {}
-                    break
-                if ids:
-                    fields[k] = [fragments[i] for i in ids]
+                    fields[key] = [fragments[i] for i in value]
+                elif isinstance(value, str) and value.strip():
+                    if not quote or value not in quote:
+                        unverified = True
+                        continue
+                    markers = draft.get("markers", {})
+                    marker = markers.get(key, "") if isinstance(markers, dict) else ""
+                    visible = (
+                        isinstance(marker, str)
+                        and bool(re.fullmatch("[a-z]", marker))
+                        and bool(
+                            re.search(
+                                re.escape(value)
+                                + r"\s*(?:\^|\()?"
+                                + marker
+                                + r"(?![a-z])",
+                                quote.replace("ᵃ", "a")
+                                .replace("ᵇ", "b")
+                                .replace("ᶜ", "c"),
+                                re.I,
+                            )
+                        )
+                    )
+                    if marker and not visible:
+                        unverified = True
+                    fields[key] = [add(value, key, [marker] if visible else [])]
             if "item" not in fields:
                 continue
-            evidence = [f for group in fields.values() for f in group]
-            identity = tuple(sorted({f.id for f in evidence}))
-            if identity in used or any(set(identity) <= set(r.evidence) for r in rows):
-                continue
-            r = _make(rows, "vision", fields, {})
-            used.add(identity)
-            if max(f.row for f in evidence) - min(f.row for f in evidence) > 1:
-                r.flag(
-                    "row_alignment",
-                    "RED",
-                    "Model fields span distinct rows; verify their association.",
+            if "requirement" in fields:
+                req = read_text(fields["requirement"])
+                typical_only = re.search(
+                    r"\btypical(?: value)?\s*[:=]?\s*" + re.escape(req), quote, re.I
                 )
+                if typical_only and not re.search(
+                    r"(?:requirement|minimum|maximum|limit)\s*[:=]?\s*"
+                    + re.escape(req),
+                    quote,
+                    re.I,
+                ):
+                    fields["typical"] = fields.pop("requirement")
+                elif re.search(r"\d", req):
+                    placeholders = re.findall(
+                        r"\b(?:TBA|TBD|By Vendor|By Agreement)\b|(?:(?<=\|)|^)\s*[-–—]\s*(?=\||$)",
+                        quote,
+                        re.I,
+                    )
+                    elsewhere = {
+                        normalized(read_text(fs))
+                        for k, fs in fields.items()
+                        if k != "requirement"
+                    }
+                    if any(normalized(v) not in elsewhere for v in placeholders):
+                        # A number elsewhere in this row is not evidence for an unspecified limit.
+                        del fields["requirement"]
+                        unverified = True
+            ident = {f.id for v in fields.values() for f in v}
+            if any(ident <= set(r.evidence) for r in rows):
+                accepted += 1
+                continue
+            channel = (
+                "frequency"
+                if any(key in fields for key in ("pqt", "ppt", "production"))
+                else "vision"
+            )
+            matches = []
+            if precise and "item" in fields:
+                for original in rows:
+                    if (
+                        original.channel not in {"performance", "frequency", "prose"}
+                        or number not in original.source_pages
+                    ):
+                        continue
+                    if normalized(original.item) != normalized(
+                        read_text(fields["item"])
+                    ):
+                        continue
+                    if any(
+                        box[1] <= sum(fragments[i].box[1::2]) / 2 <= box[3]
+                        for i in original.bindings.get("item", [])
+                        if fragments[i].page == number
+                    ):
+                        matches.append(original)
+            if len(matches) == 1 and all(
+                getattr(matches[0], k) == read_text(fs) for k, fs in fields.items()
+            ):
+                accepted += 1
+                continue
+            r = _make(rows, channel, fields, context, visual_caption or caption)
+            if len(matches) == 1:
+                original = matches[0]
+                for row, peer in ((original, r), (r, original)):
+                    row.flag(
+                        "visual_alternative",
+                        "RED",
+                        "Readings differ on this printed row. Compare "
+                        + peer.id
+                        + " and record the supported reading.",
+                    )
+            if quote:
+                r.verbatim = quote
+                r.notation = quote
+                r.bind("image_transcription", [add(quote, "source")])
+            r.flag(
+                "visual_transcription",
+                "CHECK",
+                "Verify the visual transcription against the original page.",
+            )
+            if unverified:
+                r.flag(
+                    "unverified_field",
+                    "RED",
+                    "Fields outside the quoted image transcription were omitted.",
+                )
+            if (
+                ids
+                and max(fragments[k].row for k in ids)
+                - min(fragments[k].row for k in ids)
+                > 1
+            ):
+                r.flag(
+                    "row_alignment", "RED", "Model fields span distinct source rows."
+                )
+            accepted += 1
+        if not accepted and not page.issue and (drafts or page.carrier != "native"):
+            r = Requirement(
+                f"R{len(rows) + 1:05}",
+                "coverage",
+                item="Visual page review",
+                source_pages=[number],
+            )
+            r.flag(
+                "visual_incomplete",
+                "RED",
+                "No usable visual rows. Inspect the original page.",
+            )
+            rows.append(r)

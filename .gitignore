@@ -20,3 +20,6 @@ final/
 
 # Private order parser configuration
 /config.yaml
+# Portable order review runtime data
+private/
+exports/

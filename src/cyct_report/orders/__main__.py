@@ -2,9 +2,7 @@ import argparse
 import json
 import sys
 
-from .export import export_directory
 from .store import Store
-from .web import serve
 
 
 def main(argv=None):
@@ -28,13 +26,17 @@ def main(argv=None):
         choices=["ISO 21809-3:2016"],
         help="engineer-selected read-only comparison when the PDF omits an edition",
     )
+    imp.add_argument(
+        "--vision-pages", help="physical pages allowed for visual parsing, e.g. 3,5-9"
+    )
+    sub.add_parser("desktop")
     sub.add_parser("list")
     show = sub.add_parser("show")
     show.add_argument("document")
     review = sub.add_parser("review")
     review.add_argument("document")
     review.add_argument("row")
-    review.add_argument("action", choices=["confirm", "edit", "clarify"])
+    review.add_argument("action", choices=["confirm", "edit", "clarify", "exclude"])
     review.add_argument("--user", required=True)
     review.add_argument("--version", type=int, required=True)
     review.add_argument("--changes", default="{}")
@@ -53,7 +55,14 @@ def main(argv=None):
     a = p.parse_args(argv)
     store = Store(a.data_dir)
     try:
+        if a.command == "desktop":
+            from .desktop import launch
+
+            launch(store)
+            return 0
         if a.command == "serve":
+            from .web import serve
+
             serve(store, a.port, a.open, a.config)
             return 0
         if a.command == "import":
@@ -64,6 +73,7 @@ def main(argv=None):
                 a.revision,
                 config=a.config,
                 reference_edition=a.reference_edition,
+                vision_pages=a.vision_pages,
             )
         elif a.command == "list":
             result = store.list_documents()
@@ -84,6 +94,8 @@ def main(argv=None):
                 respondent=a.respondent,
             )
         else:
+            from .export import export_directory
+
             result = str(export_directory(store, a.order, a.directory))
         print(json.dumps(result, ensure_ascii=False))
         return 0

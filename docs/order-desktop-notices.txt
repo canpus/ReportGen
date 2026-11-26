@@ -1,0 +1,11 @@
+ReportGen order review desktop — bundled software
+The Windows package includes CPython 3.12.10 and its Tcl/Tk distribution from
+https://www.python.org/downloads/release/python-31210/ . See runtime/LICENSE.txt
+and runtime/tcl/tk8.6/license.terms. The C++ runtime DLL is supplied app-local
+from Microsoft's signed Microsoft.VCLibs.x64.14.00.Desktop package.
+https://learn.microsoft.com/en-us/troubleshoot/developer/visualstudio/cpp/libraries/c-runtime-packages-desktop-bridge
+Python package notices are in runtime/Lib/site-packages/*dist-info .
+PyMuPDF / MuPDF: https://pymupdf.readthedocs.io/en/latest/about.html#license
+Sources: https://github.com/pymupdf/PyMuPDF/tree/1.26.6 and https://mupdf.com/ .
+ReportGen UI fonts: see app/src/cyct_report/orders/fonts/OFL.txt and NOTICE.txt.
+The versioned input names, original download addresses and SHA-256 digests are in sources.json.

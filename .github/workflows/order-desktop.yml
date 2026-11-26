@@ -1,0 +1,37 @@
+name: Build order review desktop
+on:
+  workflow_dispatch:
+  push:
+    branches: [work]
+    paths:
+      - 'src/cyct_report/orders/**'
+      - 'src/cyct_report/paths.py'
+      - 'tools/build_orders_portable.py'
+      - 'tools/orders-win64-lock.json'
+      - 'tools/verify_orders_windows.py'
+      - 'docs/order-review.md'
+      - '.github/workflows/order-desktop.yml'
+permissions:
+  contents: read
+jobs:
+  portable:
+    runs-on: windows-2022
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: '3.12.10'
+      - name: Build self-contained portable ZIP
+        run: python tools/build_orders_portable.py
+      - name: Check the unpacked Windows runtime
+        shell: pwsh
+        run: |
+          Expand-Archive work/delivery/ReportGen-Desktop-win64.zip work/package
+          & .\work\package\ReportGen\runtime\python.exe -B tools/verify_orders_windows.py
+          exit $LASTEXITCODE
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: ReportGen-Desktop-win64
+          path: work/delivery/ReportGen-Desktop-win64.zip
+          compression-level: 0
+          if-no-files-found: error

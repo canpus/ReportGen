@@ -325,9 +325,8 @@ def test_cli_review_export_blank_cells_and_preset_isolation(tmp_path):
         headers = {c.value: c.column for c in ws[1]}
         assert ws.protection.sheet and ws.max_row == 2
         assert ws.cell(2, headers["Customer wording"]).protection.locked
-        assert ws.cell(2, headers["PDF pages"]).hyperlink.location.startswith(
-            "'Evidence'!"
-        )
+        assert ws.cell(2, headers["PDF pages"]).hyperlink is None
+        assert ws.cell(2, headers["PDF pages"]).value.endswith("p. 1")
         for name in MANUAL:
             cell = ws.cell(2, headers[name])
             assert (

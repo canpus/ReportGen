@@ -1,74 +1,70 @@
 # 订单规格书审校台
 
-质量工程师可以导入一单英文 PDF，逐项查看依据、确认要求、记录澄清问题，并为实验室导出空白 Excel。原有出厂报告程序仍从原入口启动。
+质量工程师可以导入客户的英文 PDF，逐条核对检测项目、条件、方法、合格判据、抽样、频次及失败处置。桌面版在本机保存原件、修订记录和订单快照。原有出厂报告程序继续使用原入口。
 
-## 启动
+## 启动桌面版
 
-在含有 `tools/` 的 ReportGen 源码目录使用 Python 3.12。Windows PowerShell 命令如下。
+**Windows 便携包**解压到当前用户有写权限的目录，双击 `ReportGen/Start-ReportGen.bat`。包内带 Python、Tcl/Tk、PDF 与 Excel 组件及图标。程序在同级 `private/` 中保存配置、原件和 SQLite，在 `exports/` 中保存交付物。备份时先关闭窗口，再复制这两个目录。搬到另一 Windows 用户账户后需重新填写 API 密钥。
 
-```powershell
-py -3.12 -m venv .venv
-.\.venv\Scripts\python.exe -m pip install -r requirements-orders.txt
-.\.venv\Scripts\python.exe tools/order_review.py serve --open
-```
-
-Linux 下使用同一组入口。
+**源码版**使用带 Tk 的 Python。Linux 图形会话需要 X11 或 XWayland 以及支持中文字体的 Tk。以下命令在仓库根目录执行。
 
 ```sh
 python3 -m venv .venv
 .venv/bin/python -m pip install -r requirements-orders.txt
-.venv/bin/python tools/order_review.py serve --open
+.venv/bin/python tools/order_desktop.py --data-dir /private/orders
 ```
 
-浏览器打开终端显示的本机地址。默认端口由系统分配。关闭终端或按 Ctrl+C 停止服务，订单和审校进度保存在本机。默认目录在 Windows 为 `%LOCALAPPDATA%\ReportGen\orders`，Linux 为 `${XDG_DATA_HOME:-~/.local/share}/ReportGen/orders`。可在子命令前加 `--data-dir 私有目录`。关闭服务后备份整个目录即可同时保留原件、数据库和版本记录。导出目录也应放在私有位置。
+Windows 源码版可使用 `py -3.12 -m venv .venv`，将上述解释器替换为 `.venv\Scripts\python.exe`。省略数据目录时使用当前用户的 ReportGen 订单目录。原有 Web 审校入口为 `python tools/order_review.py serve --open`。
 
-纯扫描页需要本机 Tesseract 及英语语言包，可用 `tesseract --list-langs` 检查是否有 `eng`。没有可用 OCR 或页面未识别到文本时，审校台会列出需人工核查的页。可以在图上框选、转录并确认，或登记 TQ。原生文本页直接提取。普通使用和本任务的私有评测均可完全离线。
+## 导入与 API 配置
 
-## 审校一份订单
+1. 普通原生文本 PDF 可直接点「导入 PDF」。填写订单号、文号和版次，可先本地预览任意物理页。默认桌面配置使用本地确定性规则。
+2. 需要图像识别时打开「API 设置」，启用视觉解析，输入服务地址、模型及认证信息。地址可填 `192.168.1.20:8000`、内网 HTTP、外部 HTTPS 或完整的兼容服务路径。标准认证使用 Authorization 和 Bearer，自定义认证头可自行填写。点「测试连接」会发送一条文本请求，再点「保存配置」。
+3. 每个非回环服务都需要勾选「允许向此服务发送筛选后的规格书页」。系统按页筛选可读出的检测表和正文，跳过可识别的封面、目录、修订记录。纯图片页缺少本地文本时，先用导入窗口预览，再输入经授权的物理页范围，例如 `4,6-8`。显式页码决定本次允许发送的全集。其余页仍会做本地规则扫描。服务接收所选页的彩色图像及本页文字提示。
+4. 视觉服务可按行返回原文和字段，区域可选。解析器接受纯 JSON 和 Markdown JSON 代码块。无区域的图像证据定位到整页。未能转录、接口超时或响应截断均逐页登记待核查。可以框选补录或登记待澄清。
+5. 导入按内容哈希和文档版本登记。同一订单、文号、版次、文件的重复导入会打开既有审校进度。同文副本共享适用的审校记录。需要重新核验新发规格书时登记其新版本。
 
-1. 点击「导入 PDF」，填写订单号、文号和版次。系统按原件计算 SHA-256，保留物理页、归一化坐标、文本和图像来源。相同订单双次导入同一文号、版次和字节内容会返回原记录。同文副本利用逐页渲染和文字签名识别。订单、版次或人工指定的对照版本不同，审校决定分别保存。
-2. 「只读对照版本」默认采用文内明确的版本。合同另行指定 ISO 21809-3:2016 时，工程师可在导入时选定。对照结果保留版本来源、适用型别和表号。源文没有给出型别或有多个可用解释时，应核实适用范围。正式订单只读客户字段，基准出现在「引用与标准对照」中。
-3. 右侧切换「条款」或「频次矩阵」。可按状态、部件、工况、PQT、PPT 或 Production 筛选。点击一行，左侧显示 180 DPI 原页和证据框。页码从 PDF 文件的第一页计为 1。点击页码或引用可以检查续页、脚注、方法来源。OCR 的上标、根号、比较符和横线尤其需要对照图像。
-4. 「结构化字段与原位修订」可修改工程师对原件的解读。填写审核人和修订说明后点「保存修订」，再核对并确认。客户英文原文和几何证据独立保留，审计记录可展开查看初值、修改值、审核人及时间。同一行被另一浏览器修改后，重新选择文档以载入新版本。
-5. 需要客户解释的项目点「登记待澄清」，填写问题及待答方。数值角色区分典型值、试验条件、合格限值及待定占位。红色告警或待核对的高风险符号必须有原页复核说明与明确确认，或转为 TQ。纯典型值没有合格限值。`By Agreement` 和横线在各阶段各自保留。
-6. 发现漏项时点击「补录条款」，在左侧原页拖选矩形，按图转录英文。对识别失败的页面，确认所有补录项后再对整页做复核记录。如果整页没有检测要求，可勾选整页核查声明并写明依据。可随时翻页核查没有候选行的页面。
-7. 点「导出订单」下载 ZIP。一个订单可登记多份文档，同一文号最近导入的版本用于当前导出。每次审校改变后的首次导出生成新的确认版；同一状态重复导出复用同一快照。普通待核对项目不会进入确认清单，导出摘要会显示遗漏的待核对项数。有未处理的 RED 或符号复核项时会显示阻断条目编号。
+密钥保存在私有配置 `api.json`。Windows 使用当前用户 DPAPI，Linux 使用仅当前用户可读写的文件。包含客户信息的原件、截图、导出和配置均应保存在私有位置。
 
-## 导出内容
+## 对照原页审校
 
-| 文件 | 质量部和实验室可查看的内容 |
+- 选择清单中的一项，左侧跳到 PDF 物理页并框出相应证据。可以拖动分隔线、翻页、输入页码、放大，放大后拖动视图检查表格另一侧。右侧展示限值、条件、方法、英文原文、告警、脚注和引用。状态下拉框与查找框可按检测项、工况、部件、阶段或条目编号筛选。
+- **确认**时填写审核人。涉及 RED、比较符、根号、指数或视觉转录时，勾选已核对并写明依据。标准比对结果只在参考区域出现。数值高温选用 Tmax 基准时，还需核实该工况是否为适用的最高温度。
+- **修订**允许就地修改结构化字段并登记依据。原文和初值保留，审计中可见修改人、时间及变化。仅典型值、待定占位和阶段横线继续保留其业务语义。
+- **待澄清**需要问题和待答方。**排除非检测项**需要审核人和原因，适用于目录条目、行政要求等噪声。已排除项可通过状态筛选重新打开；重新确认或修订均产生新的审计事件。整页尚未识别时，排除需要额外确认已核实整页无检测要求。原页确有要求时可框选补录。
+- **导出订单**生成一个确认版目录。未处置的 RED 或 CHECK 会指明阻断条目，普通未审候选会在摘要中计数。相同状态重复导出复用同一快照。
+
+## 导出文件
+
+| 文件 | 使用方与内容 |
 | --- | --- |
-| `confirmed.json` | 已确认条款、各工况的三阶段频次、TQ、物理页与片段坐标、来源层级、文件哈希、确认版及审计历史 |
-| `confirmed.xlsx` | 确认表、频次矩阵、TQ、证据、引用、文档索引及审计工作表。页码链接到证据行 |
-| `laboratory.xlsx` | `Laboratory`、`Field inspection` 和 `Clarifications` 三张表。按部件、工况和阶段排列。客户原文锁定，条件与判据分列，待澄清和仅供参考项有明确标识 |
+| `confirmed.json` | 质量部留档。已确认条款、三阶段频次、TQ、排除记录、来源、原页区域、版本及审计 |
+| `confirmed.xlsx` | 质量部核查。页码链接到本工作簿证据行，另含文档、频次、澄清、参考及审计工作表 |
+| `laboratory.xlsx` | 可单独发送给实验室。按实验室、现场和澄清分表，显示客户原文、文号、版次、物理页、条件、方法、限值和处置 |
 
-实验室填写浅黄色的 `Actual Test Result`、`Test Specimen/Date` 和 `Lab Judgement`。导出时这三列为空。两份 Excel 放在同一目录可跟随模板中的证据链接。工作表保护用于防止误编辑。
+实验室填写浅黄色的 `Actual Test Result`、`Test Specimen/Date` 和 `Lab Judgement`。导出时三列均为空。工作表保护锁定客户英文和执行条件，页码为普通可读文字。空缺限值、典型值和待澄清项均有单独表示。
 
-## 生成公开合成样例
-
-运行 `python tests/orders/synthetic.py work/synthetic-fixtures` 会生成四份虚构 PDF。用 `workflow.pdf` 可练习两项确认和一项待澄清，用 `matrix.pdf` 可查看两个工况的三阶段频次。混合扫描样例在测试中有确定性 OCR 桩，界面使用本机配置的 OCR。
-
-## CLI
-
-以下在有订单依赖的 Python 环境运行。示例标识均为虚构。导入返回的文档 ID 和 `show` 返回的行 ID、版本用于审核。输出包含订单内容，请将终端输出保存在私有位置。
+## CLI 与合成练习
 
 ```sh
-python tools/order_review.py --data-dir /private/orders import synthetic.pdf --order QA-DEMO --number SYN-1 --revision A
+python tests/orders/synthetic.py work/synthetic-fixtures
+python tools/order_review.py --data-dir /private/orders import work/synthetic-fixtures/workflow.pdf --order QA-DEMO --number SYN-1 --revision A
 python tools/order_review.py --data-dir /private/orders list
 python tools/order_review.py --data-dir /private/orders show DOCUMENT_ID
-python tools/order_review.py --data-dir /private/orders review DOCUMENT_ID ROW_ID confirm --user Reviewer --version 0 --checked --note "Verified on the original page."
-python tools/order_review.py --data-dir /private/orders review DOCUMENT_ID OTHER_ROW_ID clarify --version 0 --user Reviewer --question "Which limit applies?" --respondent "Document author"
+python tools/order_review.py --data-dir /private/orders review DOCUMENT_ID ROW_ID confirm --version 0 --user Reviewer --checked --note "Verified on the source page."
+python tools/order_review.py --data-dir /private/orders review DOCUMENT_ID OTHER_ID clarify --version 0 --user Reviewer --question "Which criterion applies?" --respondent "Design"
+python tools/order_review.py --data-dir /private/orders review DOCUMENT_ID NOISE_ID exclude --version 0 --user Reviewer --note "Archive instruction."
 python tools/order_review.py --data-dir /private/orders export QA-DEMO /private/exports
 ```
 
-`review ... edit --changes '{"condition":"..."}' --note "..."` 保存结构化字段修订。成功后版本递增。CLI 非零退出码和网页状态消息会说明导入、并发保存或导出失败的原因。无秘密的解析配置见 [配置样例](order-review.example.yaml)。
+替换上例文档、条目编号与当前行版本。`review ... edit --changes '{"condition":"..."}' --note "..."` 保存修订。CLI 可通过 `--config /private/config.yaml` 独立设置可选 OCR 槽与视觉抽取槽，通过 `import ... --vision-pages 4,6-8` 限定页码。可选 Tesseract 使用本机已有的可执行文件，桌面版默认使用本地规则与可选 API。[配置样例](order-review.example.yaml)
 
-## 可选解析器
+## 从源码构建 Windows ZIP
 
-将样例复制为仓库外的 `config.yaml`，用 `python tools/order_review.py --config /private/config.yaml serve --open` 启动。OCR 槽和结构化提取槽可各自指定本地规则或 OpenAI 兼容的视觉模型。OCR 接受逐词文本和归一化坐标，结构化提取只接受源片段 ID，并核对行、页和字段。接口采用 `/chat/completions`、图像输入、JSON 响应和温度 0。
+构建机使用 CPython 3.12。Linux 需要 msitools 的 `msiextract`，Windows 使用系统的 MSI 管理提取功能。以下命令校验固定来源及 SHA-256，组装完整运行时并检查 ZIP 大小与完整性。依赖缓存和发布物写入已忽略的 `work/`。
 
-默认关闭对外页图传输。配置本机模型可用回环地址。只有在有权传输该资料时才为外部 HTTPS 服务显式设置 `allow_external_pages: true`；届时被选页面及提取槽使用的文本会发给所配服务。密钥从配置指定的环境变量读取。私有配置、PDF、截图、数据库和导出文件应放在版本控制目录以外。
+```sh
+python tools/build_orders_portable.py
+```
 
-## 验证与适用范围
-
-本地规则可定位表格和正文，并提示人工复核。复杂合并单元格、识别质量差的单位、公式和隐含引用仍需要核对原页。新版本或未收录的标准类型需要独立确认。读出的客户英文、工程师修订值和标准参考分别存储。Windows 目标机、外部模型及私有评测的实测范围见 [验证报告](order-review-validation.md)。
+Linux 桌面实测、合成验收结果与目标机复核范围见[本轮验证报告](order-desktop-validation.md)。此前对提取通道与匿名私有样本的核查见[首期验证记录](order-review-validation.md)。

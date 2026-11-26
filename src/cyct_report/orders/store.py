@@ -15,7 +15,6 @@ import uuid
 from .adapters import adapters
 from .extract import extract_pages
 from .model import EDITABLE, ROLES, normalized, pending_role, quantity
-from .pdf import inspect_pdf
 from .validation import validate
 
 
@@ -116,6 +115,7 @@ class Store:
         config=None,
         providers=None,
         reference_edition=None,
+        vision_pages=None,
     ):
         order_id, doc_no, doc_rev = (
             str(x or "").strip() for x in (order_id, doc_no, doc_rev)
@@ -152,8 +152,12 @@ class Store:
                 prior = db.execute(lookup, key).fetchone()
                 if prior:
                     return duplicate(prior)
+            from .pdf import inspect_pdf
+
             ocr, vision = providers if providers is not None else adapters(config)
-            pages, signature, suggestions = inspect_pdf(temp, ocr, vision)
+            pages, signature, suggestions = inspect_pdf(
+                temp, ocr, vision, vision_pages=vision_pages
+            )
             rows = validate(extract_pages(pages, suggestions), pages, reference_edition)
             doc = uuid.uuid4().hex
             with self.connection(write=True) as db:
@@ -265,6 +269,40 @@ class Store:
         with self.connection() as db:
             return self._records(db, self._review_doc(db, doc))
 
+    def row_index(self, doc):
+        with self.connection() as db:
+            canonical = self._review_doc(db, doc)
+            return [
+                dict(r)
+                for r in db.execute(
+                    """SELECT rid,status,json_extract(current,'$.channel') AS channel,
+                substr(json_extract(current,'$.item'),1,160) AS item,json_extract(current,'$.source_pages[0]') AS page,
+                json_extract(current,'$.scenario') AS scenario,json_extract(current,'$.component') AS component,
+                json_extract(current,'$.stage') AS stage FROM requirements WHERE doc=? ORDER BY rid""",
+                    (canonical,),
+                )
+            ]
+
+    def record(self, doc, rid):
+        with self.connection() as db:
+            canonical = self._review_doc(db, doc)
+            row = db.execute(
+                "SELECT current,status,version,checked,question,respondent FROM requirements WHERE doc=? AND rid=?",
+                (canonical, rid),
+            ).fetchone()
+            if not row:
+                raise KeyError("Unknown requirement")
+            return dict(
+                json.loads(row["current"]),
+                **{k: row[k] for k in row.keys() if k != "current"},
+            )
+
+    def page_count(self, doc):
+        with self.connection() as db:
+            return db.execute(
+                "SELECT count(*) FROM pages WHERE doc=?", (self._review_doc(db, doc),)
+            ).fetchone()[0]
+
     def review(
         self,
         doc,
@@ -283,7 +321,7 @@ class Store:
         if not isinstance(checked, bool) or not isinstance(no_requirements, bool):
             raise ValueError("Review decisions must be boolean values.")
         changes = changes or {}
-        if not user.strip() or action not in {"confirm", "edit", "clarify"}:
+        if not user.strip() or action not in {"confirm", "edit", "clarify", "exclude"}:
             raise ValueError("Choose an action and enter the reviewer's name.")
         if (
             not isinstance(changes, dict)
@@ -291,6 +329,10 @@ class Store:
             or any(not isinstance(v, str) for v in changes.values())
         ):
             raise ValueError("Unknown or invalid review field")
+        if action == "exclude" and (not note.strip() or changes):
+            raise ValueError(
+                "Exclusion needs a reason and the original candidate fields."
+            )
         if action == "clarify" and not (question.strip() and respondent.strip()):
             raise ValueError(
                 "A clarification needs a question and a responsible party."
@@ -412,6 +454,14 @@ class Store:
                         )
             risky = any(a["level"] in {"RED", "CHECK"} for a in current["alerts"])
             if (
+                action == "exclude"
+                and current["channel"] == "coverage"
+                and not (checked and no_requirements)
+            ):
+                raise ReviewRequired(
+                    "Inspect the whole page and attest that it has no requirements."
+                )
+            if (
                 current["channel"] == "coverage"
                 and action == "confirm"
                 and not no_requirements
@@ -433,6 +483,7 @@ class Store:
                 "confirm": "confirmed",
                 "edit": "candidate",
                 "clarify": "clarify",
+                "exclude": "excluded",
             }[action]
             verified = bool(checked and note.strip() and action == "confirm")
             v = version + 1
@@ -559,6 +610,7 @@ class Store:
                     "SELECT * FROM documents WHERE order_id=? ORDER BY rowid", (order,)
                 )
             ]
+            excluded = []
             confirmed = []
             tqs = []
             audit = []
@@ -578,6 +630,16 @@ class Store:
                     for f in json.loads(p[0])["fragments"]:
                         fragments[f["id"]] = f
                 for r in self._records(db, canonical):
+                    if r["status"] == "excluded":
+                        excluded.append(
+                            dict(
+                                doc=d["id"],
+                                doc_no=d["doc_no"],
+                                id=r["id"],
+                                source_pages=r["source_pages"],
+                            )
+                        )
+                        continue
                     risky = any(a["level"] in {"RED", "CHECK"} for a in r["alerts"])
                     if risky and r["status"] != "clarify" and not r["checked"]:
                         raise ReviewRequired(
@@ -613,7 +675,7 @@ class Store:
                     item = dict(event)
                     item["detail"] = json.loads(item["detail"])
                     audit.append(item)
-            if not confirmed and not tqs:
+            if not confirmed and not tqs and not excluded:
                 raise ReviewRequired("Review at least one row before exporting.")
             snap = dict(
                 order_id=order,
@@ -630,6 +692,7 @@ class Store:
                 frequencies=[r for r in confirmed if r["channel"] == "frequency"],
                 clarifications=tqs,
                 omitted_pending=pending,
+                excluded=excluded,
                 audit=sorted(audit, key=lambda a: a["seq"]),
             )
             db.execute(

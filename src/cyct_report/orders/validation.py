@@ -11,7 +11,7 @@ from .extract import METHOD, NUM, TYPE, EDITION
 from .model import field_text, normalized, quantity
 
 SENSITIVE = re.compile(
-    r"√|[≥≤]|\^\s*[-+]?\d|[⁰¹²³⁴⁵⁶⁷⁸⁹]|(?<![<>=])[<>](?!=)|\b(?:TBA|By Vendor|By Agreement)\b",
+    r"√|[≥≤]|\^\s*[-+]?\d|[⁰¹²³⁴⁵⁶⁷⁸⁹]|[<>]=?|\b(?:TBA|By Vendor|By Agreement)\b",
     re.I,
 )
 STOP = {
@@ -101,6 +101,26 @@ def standards():
     return preset, extension
 
 
+def temperature_band(text):
+    if re.search(r"t\s*max|maximum service|high.temperature", text, re.I):
+        return "hot"
+    values = {
+        float(v.replace(",", "."))
+        for v in re.findall(
+            r"([−-]?\d+(?:[.,]\d+)?)\s*(?:°\s*C|℃)", text.replace("−", "-"), re.I
+        )
+    }
+    if len(values) == 1:
+        t = values.pop()
+        if 18 <= t <= 28:
+            return "ambient"
+        if t > 28:
+            return "hot"
+    if not values and re.search(r"ambient|room temp", text, re.I):
+        return "ambient"
+    return ""
+
+
 def _standard_values(r, key, edition):
     preset, extension = standards()
     typ = r.coating_type
@@ -109,7 +129,10 @@ def _standard_values(r, key, edition):
     if r.channel == "frequency":
         if not typ.startswith("14B"):
             return None
-        suffix = "_max" if "max" in normalized(r.item) else "_ambient"
+        band = temperature_band(r.test_temp or r.condition or r.item)
+        if key in {"peel", "shear", "disbondment"} and not band:
+            return None
+        suffix = "_max" if band == "hot" else "_ambient"
         k = key + suffix if key in {"peel", "shear", "disbondment"} else key
         vals = extension["annex_a_14b"].get(k)
         if vals:
@@ -145,19 +168,19 @@ def _standard_values(r, key, edition):
         if not v:
             return None
         if isinstance(v[0], list):
-            v = next(
-                (
-                    i
-                    for i in v
-                    if i[0]
-                    in re.findall(
-                        r"Tmax|[−–-]?\d+(?:[.,]\d+)?",
-                        r.test_temp.replace("−", "-"),
-                        re.I,
-                    )
-                ),
-                None,
+            # Table 30 also contains fixed sub-zero rows. An exact single temperature
+            # takes precedence, and only a stated Tmax reference can serve as a hot comparison.
+            conditions = re.findall(
+                r"Tmax|[−–-]?\d+(?:[.,]\d+)?", r.test_temp.replace("−", "-"), re.I
             )
+            choices = [
+                entry
+                for entry in v
+                if len(conditions) == 1 and entry[0].lower() == conditions[0].lower()
+            ]
+            if not choices and temperature_band(r.test_temp) == "hot":
+                choices = [entry for entry in v if entry[0].lower() == "tmax"]
+            v = choices[0] if len(choices) == 1 else None
         if v:
             return dict(
                 section="Table 30",
@@ -206,9 +229,10 @@ def _standard_values(r, key, edition):
         elif len(matches) > 1:
             return None
     if len(matches) > 1:
-        matches = [
-            v for v in matches if ("Tmax" in v[1]) == ("max" in normalized(r.test_temp))
-        ]
+        band = temperature_band(r.test_temp or r.condition or r.item)
+        matches = [v for v in matches if band and temperature_band(v[1]) == band]
+        if len(matches) != 1:
+            return None
     if not matches:
         return None
     _, temp, unit, limit, method, *_ = matches[0]
@@ -237,6 +261,16 @@ def _compare(r, key, reference_edition):
         coating_type=r.coating_type,
         tier="external_standard_ref",
     )
+    if (
+        temperature_band(r.test_temp) == "hot"
+        and re.search(r"max", str(base.get("temp", "")), re.I)
+        and not re.search("max", r.test_temp, re.I)
+    ):
+        r.flag(
+            "reference_temperature",
+            "YELLOW",
+            "Confirm that the stated test temperature is the applicable service maximum before adopting this comparison.",
+        )
     r.reference.append(base)
     if r.channel == "frequency":
         for k in ("pqt", "ppt", "production"):
@@ -475,6 +509,7 @@ def validate(rows, pages, reference_edition=None):
                     "shear",
                     "age_peel",
                     "age_elong",
+                    "indentation",
                 }
                 and not r.test_temp
             ):
@@ -482,6 +517,27 @@ def validate(rows, pages, reference_edition=None):
                     "missing_temperature",
                     "YELLOW",
                     "Test temperature needs verification.",
+                )
+            written = re.sub(r"\s+", "", r.unit or r.requirement).casefold()
+            if key in {"peel", "peel_wet"} and re.search(r"n/(?:cm|m(?!m))\b", written):
+                r.flag(
+                    "peel_unit_scale",
+                    "YELLOW",
+                    "Verify the written force-per-length scale against the order; no conversion applied.",
+                )
+            if key in {"peel", "peel_wet"} and re.search(
+                r"n/(?:mm|cm|m)(?:²|\^?2)|mpa", written
+            ):
+                r.flag(
+                    "peel_area_unit",
+                    "RED",
+                    "A force-per-area unit is printed for peel strength; clarify its meaning.",
+                )
+            if key == "impact" and re.search(r"(?<![a-z])j(?:/mm)?(?![a-z])", written):
+                r.flag(
+                    "impact_energy_basis",
+                    "YELLOW",
+                    "Check whether the order specifies total energy or energy per thickness.",
                 )
             if key in {"peel", "peel_wet"} and r.quantity_kind == "length":
                 r.flag(

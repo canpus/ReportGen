@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="local-session" content="__LOCAL_SESSION__" />
+    <title>订单规格书审校 · ReportGen</title>
+    <link rel="stylesheet" href="/style.css" />
+    <script defer src="/app.js"></script>
+  </head>
+  <body>
+    <header>
+      <div class="brand">ReportGen</div>
+      <h1>订单规格书审校</h1>
+      <button id="new">导入 PDF</button
+      ><button class="primary" id="export" disabled>导出订单</button>
+    </header>
+    <div class="bar">
+      <label
+        >订单文档
+        <select id="documents">
+          <option value="">选择已导入文档</option>
+        </select></label
+      ><span id="docinfo"></span>
+    </div>
+    <p id="message" role="status" aria-live="polite" hidden></p>
+    <section id="welcome">
+      <h2>导入客户规格书</h2>
+      <p>选择一份英文 PDF，并登记本单的文号与版次。</p>
+      <button class="primary" id="start">选择文档</button>
+    </section>
+    <main id="desk" hidden>
+      <section class="source">
+        <div class="panelhead">
+          <h2>客户原页</h2>
+          <span id="carrier"></span>
+        </div>
+        <nav class="pagebar">
+          <button id="prev" aria-label="上一页">‹</button
+          ><label
+            >物理页 <input id="page" type="number" value="1" min="1" /></label
+          ><span id="total"></span
+          ><button id="next" aria-label="下一页">›</button
+          ><button id="zoom">放大</button><button id="addrow">补录条款</button>
+        </nav>
+        <div id="canvas">
+          <div id="surface">
+            <img id="original" alt="客户规格书原始物理页" />
+            <div id="boxes"></div>
+          </div>
+        </div>
+      </section>
+      <section class="review">
+        <div class="panelhead">
+          <h2>检测要求</h2>
+          <span id="counts"></span>
+        </div>
+        <div class="filters">
+          <label
+            >状态<select id="status">
+              <option value="">全部状态</option>
+              <option value="candidate">待核对</option>
+              <option value="confirmed">已确认</option>
+              <option value="clarify">待澄清</option>
+            </select></label
+          ><label>部件<select id="component"></select></label
+          ><label>工况<select id="scenario"></select></label
+          ><label>阶段<select id="stage"></select></label>
+        </div>
+        <div role="group" class="tabs">
+          <button id="requirements" aria-pressed="true">条款</button
+          ><button id="frequencies" aria-pressed="false">频次矩阵</button>
+        </div>
+        <div class="list">
+          <table>
+            <thead id="listHead"></thead>
+            <tbody id="rows"></tbody>
+          </table>
+        </div>
+        <article id="detail" hidden>
+          <div class="panelhead">
+            <h3 id="rowtitle"></h3>
+            <div id="sourcepages"></div>
+          </div>
+          <div id="alerts"></div>
+          <details open>
+            <summary>客户原文</summary>
+            <pre id="verbatim"></pre>
+          </details>
+          <div id="notes"></div>
+          <details>
+            <summary>引用与标准对照</summary>
+            <div id="refs"></div>
+          </details>
+          <details id="fieldsPanel">
+            <summary>结构化字段与原位修订</summary>
+            <div id="fields" class="fields"></div>
+          </details>
+          <div class="decision">
+            <label>审核人<input id="reviewer" required /></label
+            ><label>核对依据或修订说明<input id="note" /></label
+            ><label class="check"
+              ><input type="checkbox" id="checked" />
+              已对照原图核实告警及高风险字符</label
+            >
+            <label class="check" id="coverageDecision" hidden
+              ><input type="checkbox" id="emptyPage" />
+              已查阅整页，确认该页没有检测要求</label
+            >
+            <div class="actions">
+              <button id="confirm" class="primary">确认</button
+              ><button id="edit">保存修订</button
+              ><button id="tq">登记待澄清</button>
+            </div>
+          </div>
+          <details id="auditPanel">
+            <summary>审计记录</summary>
+            <div id="audit"></div>
+          </details>
+        </article>
+      </section>
+    </main>
+    <dialog id="importDialog">
+      <form id="intake">
+        <h2>导入订单规格书</h2>
+        <label>订单号<input name="order" required /></label
+        ><label>文号<input name="number" required /></label
+        ><label>版次<input name="revision" required /></label
+        ><label
+          >只读对照版本<select name="edition">
+            <option value="">按规格书声明</option>
+            <option>ISO 21809-3:2016</option>
+          </select></label
+        ><label
+          >英文 PDF<input
+            name="pdf"
+            type="file"
+            accept=".pdf,application/pdf"
+            required
+        /></label>
+        <p id="importStatus" role="status"></p>
+        <div class="actions">
+          <button type="button" data-close>取消</button
+          ><button class="primary" id="submitImport">导入并提取</button>
+        </div>
+      </form>
+    </dialog>
+    <dialog id="tqDialog">
+      <form id="tqForm">
+        <h2>登记待澄清</h2>
+        <label>问题<textarea id="question" required></textarea></label
+        ><label>待答方<input id="respondent" required /></label>
+        <div class="actions">
+          <button type="button" data-close>取消</button
+          ><button class="primary">保存待澄清项</button>
+        </div>
+      </form>
+    </dialog>
+    <dialog id="manualDialog">
+      <form id="manualForm">
+        <h2>原页补录</h2>
+        <p>先在左侧原页拖选证据区域，再填写对应英文原文。</p>
+        <label>物理页与区域<input id="region" readonly /></label
+        ><label>英文原文<textarea id="manualText" required></textarea></label
+        ><label>审核人<input id="manualUser" required /></label>
+        <div class="actions">
+          <button type="button" data-close>取消</button
+          ><button class="primary">加入待核对清单</button>
+        </div>
+      </form>
+    </dialog>
+  </body>
+</html>

@@ -1,0 +1,252 @@
+{
+  "edition": "ISO 21809-3:2016",
+  "table30": {
+    "type": "18A",
+    "thickness": [
+      "",
+      "µm",
+      "by agreement",
+      "Annex B"
+    ],
+    "holiday": [
+      "",
+      "kV/mm",
+      "5, maximum 25 kV; no holiday",
+      "Annex C"
+    ],
+    "impact": [
+      [
+        "23",
+        "J/mm",
+        "≥3",
+        "Annex D"
+      ],
+      [
+        "-5",
+        "J/mm",
+        "≥1.5",
+        "Annex D"
+      ]
+    ],
+    "indentation": [
+      "Tmax",
+      "% DFT",
+      "≤30",
+      "Annex E"
+    ],
+    "disbondment": [
+      [
+        "23",
+        "mm",
+        "≤8",
+        "Annex G"
+      ],
+      [
+        "Tmax",
+        "mm",
+        "≤15",
+        "Annex G"
+      ]
+    ],
+    "hardness": [
+      "23",
+      "",
+      "manufacturer specification",
+      "ISO 868"
+    ],
+    "adhesion_steel": [
+      "23",
+      "MPa",
+      "≥10",
+      "ISO 4624"
+    ],
+    "adhesion_epoxy": [
+      "23",
+      "MPa",
+      "≥10",
+      "ISO 4624"
+    ],
+    "adhesion_polyolefin": [
+      "23",
+      "MPa",
+      "≥3.5",
+      "ISO 4624"
+    ],
+    "adhesion_wet_steel": [
+      "23",
+      "MPa",
+      "≥7",
+      "Annex I + ISO 4624"
+    ],
+    "adhesion_wet_plant": [
+      "23",
+      "MPa",
+      "≥2",
+      "Annex I + ISO 4624"
+    ],
+    "insulation_ratio": [
+      "",
+      "RS100/RS70",
+      "≥0.80",
+      ""
+    ],
+    "appearance": [
+      "",
+      "",
+      "Continuous, uniform film. Check for sags, runs and applicable colour variation.",
+      "Visual"
+    ],
+    "insulation_absolute": [
+      "23",
+      "Ω·m²",
+      "≥10^6",
+      "Annex F"
+    ]
+  },
+  "notes": {
+    "adhesion_steel": "Production exception only by agreement with cohesive glue failure; 70% of the specified value.",
+    "adhesion_epoxy": "Production exception only by agreement with cohesive glue failure; 70% of the specified value.",
+    "insulation_ratio": "Conditional on the 70-day resistance being below ten times the 100-day specified resistance.",
+    "indentation": "Test load 10 N/mm² at maximum service temperature.",
+    "disbondment": "28 days; the high-temperature condition is capped at 95 °C.",
+    "adhesion_wet_steel": "Condition for 28 days before the pull-off assessment.",
+    "adhesion_wet_plant": "Condition for 28 days before the pull-off assessment."
+  },
+  "annex_a_14b": {
+    "initial_surface": {
+      "method": "Visual",
+      "pqt": "3 joints",
+      "ppt": "3 joints",
+      "production": "Each joint"
+    },
+    "clean_surface": {
+      "method": "ISO 8501-1",
+      "pqt": "3 joints",
+      "ppt": "3 joints",
+      "production": "Each joint"
+    },
+    "roughness": {
+      "method": "ISO 8503-1",
+      "pqt": "3 joints",
+      "ppt": "3 joints",
+      "production": "3 times per shift"
+    },
+    "salts": {
+      "method": "ISO 8502-6 / ISO 8502-9",
+      "pqt": "3 joints",
+      "ppt": "3 joints",
+      "production": "3 times per shift"
+    },
+    "dust": {
+      "method": "ISO 8502-3",
+      "pqt": "3 joints",
+      "ppt": "3 joints",
+      "production": "3 times per shift"
+    },
+    "adjacent_surface": {
+      "method": "Visual",
+      "pqt": "3 joints",
+      "ppt": "3 joints",
+      "production": "Each joint"
+    },
+    "surface_temperature": {
+      "method": "-",
+      "pqt": "3 joints",
+      "ppt": "3 joints",
+      "production": "Each joint"
+    },
+    "process": {
+      "method": "-",
+      "pqt": "3 joints",
+      "ppt": "3 joints",
+      "production": "Continuously"
+    },
+    "cure": {
+      "method": "Annex P",
+      "pqt": "3 joints",
+      "ppt": "3 joints",
+      "production": "-"
+    },
+    "appearance": {
+      "method": "-",
+      "pqt": "3 joints",
+      "ppt": "3 joints",
+      "production": "Each joint"
+    },
+    "thickness": {
+      "method": "Annex B",
+      "pqt": "3 joints",
+      "ppt": "3 joints",
+      "production": "By agreement"
+    },
+    "holiday": {
+      "method": "Annex C",
+      "pqt": "3 joints",
+      "ppt": "3 joints",
+      "production": "Each joint"
+    },
+    "impact": {
+      "method": "Annex D",
+      "pqt": "3 joints",
+      "ppt": "3 joints",
+      "production": "-"
+    },
+    "indentation": {
+      "method": "Annex E",
+      "pqt": "3 joints",
+      "ppt": "-",
+      "production": "-"
+    },
+    "peel_ambient": {
+      "method": "Annex H",
+      "pqt": "3 joints",
+      "ppt": "3 joints",
+      "production": "Once per shift"
+    },
+    "peel_max": {
+      "method": "Annex H",
+      "pqt": "3 joints",
+      "ppt": "-",
+      "production": "-"
+    },
+    "immersion": {
+      "method": "Annex I",
+      "pqt": "By agreement",
+      "ppt": "By agreement",
+      "production": "-"
+    },
+    "peel_wet": {
+      "method": "Annex H",
+      "pqt": "3 joints",
+      "ppt": "By agreement",
+      "production": "-"
+    },
+    "shear_ambient": {
+      "method": "Annex J",
+      "pqt": "3 joints",
+      "ppt": "By agreement",
+      "production": "-"
+    },
+    "shear_max": {
+      "method": "Annex J",
+      "pqt": "3 joints",
+      "ppt": "By agreement",
+      "production": "-"
+    },
+    "disbondment_ambient": {
+      "method": "Annex G",
+      "pqt": "3 joints",
+      "ppt": "3 joints",
+      "production": "-"
+    },
+    "disbondment_max": {
+      "method": "Annex G",
+      "pqt": "3 joints",
+      "ppt": "By agreement",
+      "production": "-"
+    }
+  },
+  "annex_a_notes": {
+    "salts": "Production frequency may be reduced by agreement after successful PPT demonstration."
+  }
+}

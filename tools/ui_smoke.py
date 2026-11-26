@@ -1,10 +1,11 @@
 """开发用：驱动界面走一遍“填写 → 生成 → 查询 → 导入”，并截图。
 
 用法：python tools/ui_smoke.py <截图目录>
-弹窗被替换为自动应答；数据写入程序目录下的 data/。
+弹窗被替换为自动应答；使用截图目录下的独立合成数据。
 """
 import sys
 import time
+import tempfile
 from pathlib import Path
 from tkinter import messagebox
 
@@ -12,7 +13,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
 from PIL import Image                                  # noqa: E402
 
-from cyct_report import importer                           # noqa: E402
+from cyct_report import importer, paths                           # noqa: E402
 from cyct_report.models import Product                     # noqa: E402
 from cyct_report.ui import app as app_mod                  # noqa: E402
 
@@ -58,6 +59,7 @@ def shot(root, path):
 def main(out):
     out = Path(out)
     out.mkdir(parents=True, exist_ok=True)
+    paths.APP_DIR = Path(tempfile.mkdtemp(prefix="synthetic-", dir=out))
     root = app_mod.tk.Tk()
     a = app_mod.App(root)
     g = a.generate
@@ -67,27 +69,27 @@ def main(out):
     g.std_box.current(std_ids.index("iso21809-3"))
     g._std_changed(preferred="14B-2")
     g.lang.select("en")
-    g.customer.set_text("Petropipe FZE")
-    g.products.set_products([Product("80℃ Heat Shrinkable sleeves FRDPΦ159x600x2.3mm", "2615", "set",
-                                     "T250103-41"), Product("80℃ Heat Shrinkable sleeves FRDPΦ219x600x2.3mm",
-                                                            "800", "set", "T250103-41")])
+    g.customer.set_text("Mock Fixture")
+    g.products.set_products([Product("80℃ Heat Shrinkable sleeves SIMQΦ131x480x2.2mm", "173", "set",
+                                     "SIM001-41"), Product("80℃ Heat Shrinkable sleeves SIMQΦ227x480x2.2mm",
+                                                            "800", "set", "SIM001-41")])
     rows = [r for r in g.items.rows if r.var is not None]
-    for r, val in zip(rows, ["2.3", "无漏点", "＞7", "10", "1.22", "3.2", "12", "21.01", "0.85"]):
+    for r, val in zip(rows, ["2.18", "无漏点", "＞9", "", "0.91", "3.11", "17", "12.01", "0.81"]):
         r.var.set(val)
     g.items.select_row(rows[3])
     pump(root, 0.8)
     shot(root, out / "1-generate.png")
     g.generate()
     pump(root, 15)
-    # 中文 GB 报告，客户带“盛”
+    # 中文 GB 报告，客户带“星”
     g.std_box.current(std_ids.index("gbt23257"))
     g._std_changed(preferred="hs")
     g.lang.select("zh")
-    g.customer.set_text("四川盛创石油天然气工程勘察设计有限公司")
-    g.products.set_products([Product("常温热缩带FRDP406x520/2.5mm", "30", "set", "T260103-39")])
+    g.customer.set_text("合成星点测试设计工作室")
+    g.products.set_products([Product("常温热缩带SIMQ137x410/2.1mm", "30", "set", "SIM001-39")])
     g.generate()
     pump(root, 15)
-    samples = Path(__file__).resolve().parents[1] / "ref" / "samples"
+    samples = a.ctx.settings.reports_dir()
     if samples.exists():
         for rec in [importer.read_record(f) for f in importer.scan_folder(samples)]:
             if rec.customer:
@@ -95,9 +97,9 @@ def main(out):
     a.show("history")
     pump(root, 0.8)
     shot(root, out / "2-history.png")
-    a.history.customer.set_text("盛")
+    a.history.customer.set_text("星")
     a.history.refresh()
-    print("rows (盛):", len(a.history.tree.get_children()))
+    print("rows (星):", len(a.history.tree.get_children()))
     for entry in LOG:
         print(entry[0], str(entry[1])[:160])
     root.destroy()

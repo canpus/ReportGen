@@ -7,8 +7,6 @@
 import os
 import threading
 
-import comtypes
-import comtypes.client
 
 PROGIDS = {"word": ["Word.Application"], "wps": ["KWPS.Application", "WPS.Application"]}
 WD_EXPORT_PDF = 17          # wdExportFormatPDF / wdFormatPDF
@@ -28,6 +26,8 @@ def _candidates(engine: str):
 
 def available_engines() -> list:
     """检测本机可用的引擎（只查注册表，不启动程序）。"""
+    if os.name != "nt":
+        return []
     import winreg
     found = []
     for engine, ids in PROGIDS.items():
@@ -42,6 +42,8 @@ def available_engines() -> list:
 
 
 def _open_app(engine: str):
+    import comtypes.client
+
     errors = []
     for pid in _candidates(engine):
         try:
@@ -68,6 +70,10 @@ def _close_app(app):
 
 def _run(engine, func):
     """在独立 COM 环境中执行 func(app)，可在后台线程调用。"""
+    if os.name != "nt":
+        raise OfficeError("后台 Office 转换需要 Windows 上的 Word 或 WPS。")
+    import comtypes
+
     with _lock:
         comtypes.CoInitialize()
         try:

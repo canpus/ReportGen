@@ -8,6 +8,10 @@ Windows 发布包可从 [GitHub Releases](https://github.com/canpus/ReportGen/re
 - 数据：程序目录下 `data/`（SQLite 数据库、报告库、设置、自定义模板）。
 - 使用说明见 [使用说明.txt](使用说明.txt)（随发布包分发）。
 
+## 订单规格书审校
+
+源码版可导入英文 PDF、对照原页确认订单要求，并导出确认清单和实验室空白模板。安装订单依赖后运行 `python tools/order_review.py serve --open`。[启动与使用说明](docs/order-review.md) · [验证报告](docs/order-review-validation.md)
+
 ## 目录
 
 | 路径 | 内容 |
@@ -31,7 +35,7 @@ python -m venv .venv
 run.bat
 ```
 
-- 版式对照：`python tools/render_sample.py work/render`，用样本数据生成中/英/俄报告及 PNG。
+- 版式对照：`python tools/render_sample.py work/render`，用合成样例生成中/英/俄报告及 PNG。
 - 界面冒烟：`python tools/ui_smoke.py work/ui`，自动填写、生成、导入并截图。
 - 重新生成模板：`python tools/make_templates.py <中文样本.docx> <英文样本.docx>`。
 - 指标核对表：`python tools/export_checklist.py final/预置检测项核对表_v1.xlsx`，把预置库导出为 Excel 供质检核对；预置库修改后可重新导出。

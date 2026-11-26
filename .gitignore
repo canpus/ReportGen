@@ -17,3 +17,6 @@ dist/
 ~$*
 # 交付物（由脚本生成）
 final/
+
+# Private order parser configuration
+/config.yaml

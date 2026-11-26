@@ -1,0 +1,14 @@
+# Copy outside the checkout as config.yaml. The defaults work without an API key.
+allow_external_pages: false
+ocr_parser:
+  provider: tesseract
+  language: eng
+  executable: tesseract
+llm_extractor:
+  provider: rules
+# Either slot may instead contain the following mapping for an authorized endpoint.
+#   provider: openai
+#   base_url: http://127.0.0.1:8000/v1
+#   model: your-installed-vision-model
+#   api_key_env: ORDER_VISION_KEY
+#   timeout: 90

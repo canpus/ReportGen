@@ -31,11 +31,11 @@ def test_parse_requirement_unbounded():
 
 
 def test_fuzzy_search_multi_keyword_case_insensitive():
-    names = ["四川盛创石油天然气工程勘察设计有限公司", "Petropipe FZE", "盛世管道", "Rigil Techno India"]
-    assert filter_rank("盛", names) == ["盛世管道", "四川盛创石油天然气工程勘察设计有限公司"]
-    assert filter_rank("四川 设计", names) == ["四川盛创石油天然气工程勘察设计有限公司"]
-    assert filter_rank("PETRO fze", names) == ["Petropipe FZE"]
-    assert filter_rank("四川 petro", names) == []
+    names = ["合成星点测试设计工作室", "Mock Fixture", "星环样厂", "Fictional Lab East"]
+    assert filter_rank("星", names) == ["星环样厂", "合成星点测试设计工作室"]
+    assert filter_rank("合成 设计", names) == ["合成星点测试设计工作室"]
+    assert filter_rank("MOCK fixture", names) == ["Mock Fixture"]
+    assert filter_rank("合成 mock", names) == []
 
 
 def test_render_cond_tokens():
